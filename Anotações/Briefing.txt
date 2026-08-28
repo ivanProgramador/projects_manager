@@ -1,0 +1,49 @@
+PROJECT MANAGER 
+ 
+  A ideia é construir um sistema de gestão de projetos onde um projeto pode ter varios 
+  usuários associados a ele, e cada usuario desses deve ter uma tarefa dentro do projeto,
+  o Projeto vai ter 2 tipos de usuario.
+
+  1 - GESTOR( O gestor decide que usuario será associado a cada porjeto e que tarefa desse projeto sera associada a ele)
+  2 - USUARIO(O usuario possui login e senha mas ele só pode ver detalhes do projetos que ele está participando)
+
+ Projeto
+ 
+  Ao cadastrar um projeto o gestor precisa informar
+  - Nome do projeto 
+  - Objetivo do projeto
+  - prazo do projeto
+  - custo inicial do projeto 
+  - custo final do projeto 
+  - atividades 
+  - Status(concluido,em andamento,cancelado,esperando aprovação)
+
+ Atividade 
+  
+  Ao cadastrar um atividade o gestor deve informar
+   - Descrição
+   - Prazo
+   - Status(cancelada, concluida, em andamento)
+   - usuario que vai executar 
+ 
+ Regra de negócio
+
+   usuarios inclusos em projetos ativos e atividades não concluidas não podem ser excluidos
+   projetos em andamento não podem ser concluidos com atividades pendentes
+   somente gestores podem ver a lista de projetos 
+   usuarios comuns só podem ver os projetos onde eles estão inclusos
+
+ 
+
+
+   
+
+
+
+               
+ 
+
+
+
+
+

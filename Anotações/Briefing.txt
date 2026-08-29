@@ -15,7 +15,6 @@ PROJECT MANAGER
   - prazo do projeto
   - custo inicial do projeto 
   - custo final do projeto 
-  - atividades 
   - Status(concluido,em andamento,cancelado,esperando aprovação)
 
  Atividade 

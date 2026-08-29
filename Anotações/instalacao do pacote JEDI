@@ -1,0 +1,28 @@
+Nesse link eu baixai a ver~çsao mais taual do jcl 
+  https://github.com/project-jedi/jcl/tree/master
+
+A ordem correta de inetalçao é 
+
+1 - instalar o JCL 
+2 - INSTALAR O jvcl 
+
+A indtalação dele no delph 12 deve ser feita por fora 
+porque a ver~sao 12 não detecta a lib de forma nativa
+
+sempre qua for instalar o vcl verificar se dentro da pasta
+
+C:\projects_manager\JEDI\jcl\jcl\source\include\jedi 
+
+tem o arquivo 
+
+jedi.inc 
+
+se não tiver tem que colocar ele exta diponivel nesse link
+
+https://github.com/project-jedi/jedi
+
+se der erro de imcpmpatibilidade com a linha de comando acessa 
+ C:\projects_manager\JEDI\jcl\jcl\packages\d29
+
+ 
+ 

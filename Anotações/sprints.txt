@@ -1,2 +1,2 @@
-1 - construir a base  
-2 - instalar  compoentes JEDI 
+Criar as 3 tabelas feito 
+

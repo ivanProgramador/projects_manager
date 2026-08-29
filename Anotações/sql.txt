@@ -1,0 +1,51 @@
+CREATE TABLE projects_manager
+
+tabela de usuarios 
+----------------------------------------------------------------------------------------------------------
+CREATE TABLE usuarios(
+   usuarioId int identity primary key,
+   usuario_nome varchar(100) not null,
+   usuario_login varchar(80) not null,
+   usuario_senha varchar(80)not null ,
+   usuario_tipo  int not null 
+); 
+
+insert 
+ 
+   INSERT INTO usuarios(usuario_nome,usuario_login,usuario_senha,usuario_tipo) VALUES ('joao','joao','Aa123456',1)
+
+update
+
+   UPDATE usuarios
+   SET usuario_nome ='TESTE',usuario_login='TESTE',usuario_senha='TESTE',usuario_tipo=1
+   WHERE usuarioId=1;
+
+select 
+   
+   SELECT * FROM usuarios
+
+delete 
+   
+   DELETE FROM usuarios WHERE usuarioId = 1
+   
+--------------------------------------------------------------------------------------------------------------
+
+
+CREATE TABLE projetos(
+   projetoId int identity primary key,
+   projeto_nome varchar(100) not null,
+   projeto_objetivo varchar(80) not null,
+   prazo date,
+   custo_inicial money,
+   custo_final money,
+   status_atual int
+ ); 
+
+ CREATE TABLE atividade (
+   atividadeId int identity primary key,
+   atividade_descricao varchar(100) not null,
+   atividade_prazo varchar(80) not null,
+   status_atual int
+ ); 
+
+

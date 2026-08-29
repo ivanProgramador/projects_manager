@@ -1,0 +1,10 @@
+tabela de usuarios 
+tabela de projetos 
+tabela de atividades 
+tabela usuario_projeto
+tabela usuario_atividade
+tabela projeto_usuario 
+tabela projeto_atividade
+criar pelo menos uma procedure 
+
+ 

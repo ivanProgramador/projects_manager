@@ -1,2 +1,4 @@
-Criar as 3 tabelas feito 
+Primeiro eu fiz o planejamento da base de dados
+e criei a tabela de usuarios  
+
 

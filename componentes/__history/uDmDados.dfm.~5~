@@ -1,0 +1,37 @@
+object DataModule1: TDataModule1
+  Height = 317
+  Width = 640
+  object Conexao: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Persist Security Info=False;User ID=sa;Initi' +
+      'al Catalog=projects_manager;Data Source=127.0.0.1'
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 32
+    Top = 32
+  end
+  object qryUsuariosSELECT: TADOQuery
+    Connection = Conexao
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT * FROM usuarios')
+    Left = 128
+    Top = 32
+  end
+  object qryUsuariosINSERT: TADOQuery
+    Parameters = <>
+    Left = 248
+    Top = 32
+  end
+  object qryUsuariosUPDATE: TADOQuery
+    Parameters = <>
+    Left = 384
+    Top = 32
+  end
+  object qryUsuariosDELETE: TADOQuery
+    Parameters = <>
+    Left = 512
+    Top = 32
+  end
+end

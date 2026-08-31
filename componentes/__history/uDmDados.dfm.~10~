@@ -1,0 +1,19 @@
+object dtmDados: TdtmDados
+  Height = 317
+  Width = 640
+  object Conexao: TADOConnection
+    Connected = True
+    ConnectionString = 
+      'Provider=SQLOLEDB.1;Persist Security Info=False;User ID=sa;Initi' +
+      'al Catalog=projects_manager;Data Source=127.0.0.1'
+    LoginPrompt = False
+    Provider = 'SQLOLEDB.1'
+    Left = 32
+    Top = 32
+  end
+  object qryUsuarios: TADOQuery
+    Parameters = <>
+    Left = 120
+    Top = 32
+  end
+end

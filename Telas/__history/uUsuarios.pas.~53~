@@ -1,0 +1,247 @@
+unit uUsuarios;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, JvExStdCtrls, JvEdit,
+  JvExControls, JvLabel, JvCombobox, Vcl.Grids, JvExGrids, JvGrids, Vcl.Buttons,
+  JvExButtons, JvBitBtn, Data.DB;
+
+type
+  TfrmUsuarios = class(TForm)
+    lblNome: TJvLabel;
+    edtNome: TJvEdit;
+    lblLogin: TJvLabel;
+    edtLogin: TJvEdit;
+    JvLabel1: TJvLabel;
+    edtSenha: TJvEdit;
+    cboTipo: TJvComboBox;
+    lblTipo: TJvLabel;
+    btnCadastrar: TJvBitBtn;
+    btnAtualizar: TJvBitBtn;
+    JvBitBtn2: TJvBitBtn;
+    gridUsuarios: TJvDrawGrid;
+    procedure btnCadastrarClick(Sender: TObject);
+    procedure gridUsuariosDrawCell(Sender: TObject; ACol, ARow: LongInt;
+      Rect: TRect; State: TGridDrawState);
+    procedure FormShow(Sender: TObject);
+    procedure gridUsuariosSelectCell(Sender: TObject; ACol, ARow: LongInt;
+      var CanSelect: Boolean);
+    procedure btnAtualizarClick(Sender: TObject);
+
+  private
+    { Private declarations }
+    FIdSelecionado: integer;
+
+  public
+    { Public declarations }
+    procedure AtualizarGrid;
+  end;
+
+var
+  frmUsuarios: TfrmUsuarios;
+
+implementation
+
+{$R *.dfm}
+
+uses uDmDados;
+
+procedure TfrmUsuarios.AtualizarGrid;
+begin
+  dtmDados.qryUsuarios.Close;
+  dtmDados.qryUsuarios.SQL.Text := 'SELECT * FROM dbo.usuarios';
+  dtmDados.qryUsuarios.Open;
+
+  gridUsuarios.ColCount := 5;
+  gridUsuarios.RowCount := dtmDados.qryUsuarios.RecordCount + 1;
+  gridUsuarios.Invalidate;
+end;
+
+procedure TfrmUsuarios.btnCadastrarClick(Sender: TObject);
+begin
+  if (edtNome.Text = '') or (edtLogin.Text = '') or (edtSenha.Text = '') then
+  begin
+    ShowMessage('Por favor preencha todos os dados');
+    Exit;
+  end;
+
+  try
+    dtmDados.qryUsuarios.Close;
+    dtmDados.qryUsuarios.SQL.Clear;
+    dtmDados.qryUsuarios.SQL.Add('INSERT INTO dbo.usuarios(usuario_nome, usuario_login, usuario_senha, usuario_tipo)');
+    dtmDados.qryUsuarios.SQL.Add('VALUES (:nome, :login, :senha, :tipo)');
+
+    dtmDados.qryUsuarios.Parameters.ParamByName('nome').DataType  := ftString;
+    dtmDados.qryUsuarios.Parameters.ParamByName('login').DataType := ftString;
+    dtmDados.qryUsuarios.Parameters.ParamByName('senha').DataType := ftString;
+    dtmDados.qryUsuarios.Parameters.ParamByName('tipo').DataType  := ftInteger;
+
+    dtmDados.qryUsuarios.Parameters.ParamByName('nome').Value  := edtNome.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('login').Value := edtLogin.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('senha').Value := edtSenha.Text;
+
+    if (cboTipo.Text = 'GESTOR') then
+      dtmDados.qryUsuarios.Parameters.ParamByName('tipo').Value := 1
+    else
+      dtmDados.qryUsuarios.Parameters.ParamByName('tipo').Value := 2;
+
+    dtmDados.qryUsuarios.ExecSQL;
+    ShowMessage('Usuário cadastrado com sucesso!');
+    
+    AtualizarGrid;
+
+    edtNome.Clear;
+    edtLogin.Clear;
+    edtSenha.Clear;
+    edtNome.SetFocus;
+  except
+    on E: Exception do
+      ShowMessage('Erro ao cadastrar usuário: ' + E.Message);
+  end;
+end;
+
+procedure TfrmUsuarios.FormShow(Sender: TObject);
+begin
+  AtualizarGrid;
+end;
+
+procedure TfrmUsuarios.gridUsuariosDrawCell(Sender: TObject; ACol,
+  ARow: LongInt; Rect: TRect; State: TGridDrawState);
+var 
+  Texto: string;
+begin
+  // Linha 0 = Cabeçalho
+  if ARow = 0 then
+  begin
+    case ACol of
+      0: Texto := 'ID';
+      1: Texto := 'Nome';
+      2: Texto := 'Login';
+      3: Texto := 'Senha';
+      4: Texto := 'Tipo';
+    end;
+
+    gridUsuarios.Canvas.Brush.Color := clBtnFace;
+    gridUsuarios.Canvas.FillRect(Rect);
+    gridUsuarios.Canvas.Font.Style := [fsBold];
+    gridUsuarios.Canvas.TextOut(Rect.Left + 4, Rect.Top + 4, Texto);
+    Exit;
+  end;
+
+  // Linhas de Dados
+  if not dtmDados.qryUsuarios.IsEmpty then
+  begin
+    dtmDados.qryUsuarios.RecNo := ARow;
+
+    case ACol of
+      0: Texto := dtmDados.qryUsuarios.FieldByName('usuarioId').AsString;
+      1: Texto := dtmDados.qryUsuarios.FieldByName('usuario_nome').AsString;
+      2: Texto := dtmDados.qryUsuarios.FieldByName('usuario_login').AsString;
+      3: Texto := dtmDados.qryUsuarios.FieldByName('usuario_senha').AsString;
+      4: Texto := dtmDados.qryUsuarios.FieldByName('usuario_tipo').AsString;
+    end;
+
+    if gdSelected in State then
+    begin
+      gridUsuarios.Canvas.Brush.Color := clHighlight;
+      gridUsuarios.Canvas.Font.Color  := clHighlightText;
+    end
+    else
+    begin
+      gridUsuarios.Canvas.Brush.Color := clWindow;
+      gridUsuarios.Canvas.Font.Color  := clWindowText;
+    end;
+
+    gridUsuarios.Canvas.FillRect(Rect);
+    gridUsuarios.Canvas.TextOut(Rect.Left + 4, Rect.Top + 4, Texto);
+  end;
+end;
+
+procedure TfrmUsuarios.gridUsuariosSelectCell(Sender: TObject; ACol,
+  ARow: LongInt; var CanSelect: Boolean);
+begin
+  // Ignora o clique no cabeçalho
+  if ARow = 0 then Exit;
+
+  if not dtmDados.qryUsuarios.IsEmpty then
+  begin
+    dtmDados.qryUsuarios.RecNo := ARow;
+    
+    // Carrega os dados nos edita da tela
+    edtNome.Text  := dtmDados.qryUsuarios.FieldByName('usuario_nome').AsString;
+    edtLogin.Text := dtmDados.qryUsuarios.FieldByName('usuario_login').AsString;
+    
+    if dtmDados.qryUsuarios.FieldByName('usuario_tipo').AsInteger = 1 then
+      cboTipo.Text := 'GESTOR'
+    else
+      cboTipo.Text := 'USUARIO';
+
+    // Captura o ID correto
+    FIdSelecionado := dtmDados.qryUsuarios.FieldByName('usuarioId').AsInteger;
+  end;
+end;
+
+procedure TfrmUsuarios.btnAtualizarClick(Sender: TObject);
+    begin
+      if FIdSelecionado <= 0 then
+      begin
+        ShowMessage('Selecione um usuário na tabela para atualizar');
+        Exit;
+      end;
+
+      if Trim(edtNome.Text) = '' then
+      begin
+        ShowMessage('Informe o nome do usuário');
+        edtNome.SetFocus;
+        Exit;
+      end;
+
+  try
+        dtmDados.qryUsuarios.Close;
+        dtmDados.qryUsuarios.SQL.Clear;
+
+        dtmDados.qryUsuarios.SQL.Add('UPDATE dbo.usuarios SET');
+        dtmDados.qryUsuarios.SQL.Add('  usuario_nome = :nome,');
+        dtmDados.qryUsuarios.SQL.Add('  usuario_login = :login,');
+
+        if Trim(edtSenha.Text) <> '' then
+          dtmDados.qryUsuarios.SQL.Add('  usuario_senha = :senha,');
+
+            dtmDados.qryUsuarios.SQL.Add('  usuario_tipo = :tipo');
+            dtmDados.qryUsuarios.SQL.Add('WHERE usuarioId = :id');
+
+            dtmDados.qryUsuarios.Parameters.ParamByName('nome').Value  := edtNome.Text;
+            dtmDados.qryUsuarios.Parameters.ParamByName('login').Value := edtLogin.Text;
+
+        if Trim(edtSenha.Text) <> '' then
+            dtmDados.qryUsuarios.Parameters.ParamByName('senha').Value := edtSenha.Text;
+
+        if (cboTipo.Text = 'GESTOR') then
+            dtmDados.qryUsuarios.Parameters.ParamByName('tipo').Value := 1
+        else
+            dtmDados.qryUsuarios.Parameters.ParamByName('tipo').Value := 2;
+
+            dtmDados.qryUsuarios.Parameters.ParamByName('id').Value := FIdSelecionado;
+
+            dtmDados.qryUsuarios.ExecSQL;
+
+        ShowMessage('Usuário atualizado com sucesso!');
+
+        // Atualiza a busca e o grid
+        AtualizarGrid;
+
+        // Limpa a seleção e os campos
+        FIdSelecionado := 0;
+        edtNome.Clear;
+        edtLogin.Clear;
+        edtSenha.Clear;
+
+  except
+        on E: Exception do
+          ShowMessage('Erro ao atualizar: ' + E.Message);
+  end;
+end;
+
+end.

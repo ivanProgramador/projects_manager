@@ -156,6 +156,7 @@ object frmUsuarios: TfrmUsuarios
     Width = 337
     Height = 120
     TabOrder = 7
+    OnClick = gridUsuariosClick
     OnDrawCell = gridUsuariosDrawCell
     DrawButtons = False
     ColWidths = (

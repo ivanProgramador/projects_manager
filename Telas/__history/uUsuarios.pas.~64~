@@ -338,8 +338,7 @@ end;
   para os campos o upate é feito em duas fases e esa seria a fase 1
 }
 procedure TfrmUsuarios.gridUsuariosClick(Sender: TObject);
-  var
-    codTipo: Integer;
+
     begin
 
        if gridUsuarios.Row > 0  then
@@ -349,21 +348,9 @@ procedure TfrmUsuarios.gridUsuariosClick(Sender: TObject);
            dtmDados.qryUsuarios.RecNo := gridUsuarios.Row;
 
            //preenchendo os campos com os dados do registro selecionado
-
            edtNome.Text := dtmDados.qryUsuarios.FieldByName('usuario_nome').AsString;
            edtLogin.Text := dtmDados.qryUsuarios.FieldByName('usuario_login').AsString;
            edtSenha.Text := dtmDados.qryUsuarios.FieldByName('usuario_senha').AsString;
-
-           // quando eu salvo um tipo de usuario eu coloco 1 pra gestor  e 2 pra usuario
-           //então quando eu faço a busca vai vir 1 ou 2
-            codTipo := dtmDados.qryUsuarios.FieldByName('usuario_tipo').AsInteger;
-
-            case codTipo of
-              1: cboTipo.ItemIndex := 0; // se vir  1 ele seleciona o indice 1
-              2: cboTipo.ItemIndex := 1; // se vir 2 ele selaciona o indice 2
-            else
-              cboTipo.ItemIndex := -1;   // se não vier nada (melhor colocar iss pra eu saber se tavndo alguma coisa )
-            end;
 
 
 

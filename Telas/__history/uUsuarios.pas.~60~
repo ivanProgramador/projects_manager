@@ -59,12 +59,13 @@ type
       Rect: TRect; State: TGridDrawState);
 
     procedure FormShow(Sender: TObject);
+    procedure gridUsuariosClick(Sender: TObject);
 
-    procedure gridUsuariosSelectCell(Sender: TObject; ACol, ARow: LongInt;
+    
 
-      var CanSelect: Boolean);
+     
 
-    procedure btnAtualizarClick(Sender: TObject);
+   
 
 
 
@@ -331,6 +332,40 @@ begin
 end;
 
 
+{
+  Atualizar usuarios parte 1
+  quando o usuarios clievar em uma celula o sistema vai trazer os dados dela
+  para os campos o upate é feito em duas fases e esa seria a fase 1
+}
+procedure TfrmUsuarios.gridUsuariosClick(Sender: TObject);
+
+    begin
+
+       if gridUsuarios.Row > 0  then
+        begin
+           //muda o pontaeiro do dataset para o registro selecionado
+           dtmDados.qryUsuarios.RecNo := gridUsuarios.Row;
+
+           //preenchendo os campos com os dados do registro selecionado
+           edtNome.Text := dtmDados.qryUsuarios.FieldByName('nome').AsString;
+           edtLogin.Text := dtmDados.qryUsuarios.FieldByName('login').AsString;
+           edtSenha.Text := dtmDados.qryUsuarios.FieldByName('senha').AsString;
+           edtNome.Text := dtmDados.qryUsuarios.FieldByName('nome').AsString;
+           cboTipo.ItemIndex := cboTipo.Items.IndexOf(dtmDados.qryUsuarios.FieldByName('tipo').Asstring);
+
+
+
+        end;
+
+
+    end;
+
+
+
+
+
+
+
 
 procedure TfrmUsuarios.gridUsuariosDrawCell(Sender: TObject; ACol,
 
@@ -465,230 +500,6 @@ begin
  end;
 
 
-
-{
-
-  Atualização parte 1
-
-  Esse codigo vai pegar os dados que estão na linha selecionada
-
-}
-
-procedure TfrmUsuarios.gridUsuariosSelectCell(Sender: TObject; ACol,
-
-  ARow: LongInt; var CanSelect: Boolean);
-
-
-
-begin
-
-
-
-   // como a linha zero e o cabeçalho os dados estaão aparecendo apartirr da linha 1
-
-
-
-   dtmDados.qryUsuarios.RecNo := Arow; //pegando o id que esta na celula
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('nome').AsString;
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('login').AsString;
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('tipo').AsString;
-
-
-
-   //passando o id do usuarios selecionado pra uma varivel privada
-
-
-
-   FIdSelecionado := dtmDados.qryUsuarios.FieldByName('id').AsInteger;
-
-
-
-
-
-
-
-end;
-
-
-
-{
-
- Atuaização parte 2
-
- Executando a o SQL que vai gravar a atualização
-
-}
-
-procedure TfrmUsuarios.btnAtualizarClick(Sender: TObject);
-
-  begin
-
-
-
-     //tendo certeza de que houve a seleção
-
-    //testando se a linha selecionada é menor ou igual a zer
-
-
-
-    if FIdSelecionado <= 0 then
-
-      begin
-
-
-
-        ShowMessage('Seleciona um usuário na tabela pra atualizar');
-
-        Exit;
-
-
-
-      end;
-
-
-
-    //validando os campos
-
-    //testado sem espços
-
-
-
-    if Trim(edtNome.Text) = '' then
-
-        begin
-
-
-
-           ShowMessage('Informe o nome do usuário ');
-
-           edtNome.SetFocus;
-
-           Exit;
-
-
-
-        end;
-
-
-
-      //fazendo o UPDATE de fato
-
-      try
-
-      
-
-        dtmDados.qryUsuarios.Close;
-
-        dtmDados.qryUsuarios.SQL.Clear;
-
-        
-
-        //atualizando nome eo login 
-
-
-
-        dtmDados.qryUsuarios.SQL.Add('UPDATE usuarios SET');
-
-        dtmDados.qryUsuarios.SQL.Add(' nome = :nome ,  ');
-
-        dtmDados.qryUsuarios.SQL.Add(' login = :login, ');
-
-
-
-        //se asneha não estiver vazia altera ela também
-
-         
-
-        if Trim(edtSenha.Text) <> '' then
-
-          dtmDados.qryUsuarios.SQL.Add('senha = :senha ,');
-
-
-
-        
-
-        dtmDados.qryUsuarios.SQL.Add(' tipo = :tipo ');
-
-
-
-        //altera com base no id
-
-        
-
-        dtmDados.qryUsuarios.SQL.Add(' WHERE id = :id ');
-
-
-
-        // preenchendo as veriáveis da query com os dados do formulario
-
-
-
-       dtmDados.qryUsuarios.Parameters.ParamByName('nome').Value.AsString := edtNome.Text;
-
-       dtmDados.qryUsuarios.Parameters.ParamByName('login').Value := edtLogin.Text;
-
-
-
-       if Trim( edtSenha.Text ) <> '' then
-
-           dtmDados.qryUsuarios.Parameters.ParamByName('senha').Value := edtSenha.Text;
-
-
-
-       dtmDados.qryUsuarios.Parameters.ParamByName('tipo').Value := cboTipo.Text;
-
-       dtmDados.qryUsuarios.Parameters.ParamByName('id').Value.AsInteger := FIdSelecionado;
-
-
-
-       dtmDados.qryUsuarios.ExecSQL;
-
-
-
-       ShowMessage('Usuário atualizado com sucesso!');
-
-
-
-       //recarregando a busca
-
-       dtmDados.qryUsuarios.Close;
-
-       dtmDados.qryUsuarios.Open;
-
-
-
-       //Recarreganod o grid 
-
-       gridUsuarios.Invalidate;
-
-
-
-       //limpa a seleção e os campos 
-
-       FIdSelecionado := 0;
-
-       edtNome.Clear;
-
-       edtLogin.Clear;
-
-       edtSenha.Clear; 
-
-       
-
-      except
-
-          on E: Exception do
-
-            ShowMessage('Erro ao atualizar: ' + E.Message);
-
-      end;
-
-      
-
-   end;
 
 
 

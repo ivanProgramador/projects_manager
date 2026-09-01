@@ -10,6 +10,7 @@ object frmUsuarios: TfrmUsuarios
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnShow = FormShow
   TextHeight = 15
   object lblNome: TJvLabel
     Left = 16
@@ -133,7 +134,7 @@ object frmUsuarios: TfrmUsuarios
     TabOrder = 4
     OnClick = btnCadastrarClick
   end
-  object JvBitBtn1: TJvBitBtn
+  object btnAtualizar: TJvBitBtn
     Left = 239
     Top = 176
     Width = 146
@@ -150,12 +151,19 @@ object frmUsuarios: TfrmUsuarios
     TabOrder = 6
   end
   object gridUsuarios: TJvDrawGrid
-    Left = 256
+    Left = 239
     Top = 24
-    Width = 320
+    Width = 337
     Height = 120
     TabOrder = 7
+    OnClick = gridUsuariosClick
     OnDrawCell = gridUsuariosDrawCell
     DrawButtons = False
+    ColWidths = (
+      64
+      64
+      64
+      64
+      73)
   end
 end

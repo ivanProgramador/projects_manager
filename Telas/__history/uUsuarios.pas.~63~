@@ -59,12 +59,13 @@ type
       Rect: TRect; State: TGridDrawState);
 
     procedure FormShow(Sender: TObject);
+    procedure gridUsuariosClick(Sender: TObject);
 
-    procedure gridUsuariosSelectCell(Sender: TObject; ACol, ARow: LongInt;
+    
 
-      var CanSelect: Boolean);
+     
 
-    procedure btnAtualizarClick(Sender: TObject);
+   
 
 
 
@@ -331,6 +332,35 @@ begin
 end;
 
 
+{
+  Atualizar usuarios parte 1
+  quando o usuarios clievar em uma celula o sistema vai trazer os dados dela
+  para os campos o upate é feito em duas fases e esa seria a fase 1
+}
+procedure TfrmUsuarios.gridUsuariosClick(Sender: TObject);
+
+    begin
+
+       if gridUsuarios.Row > 0  then
+        begin
+
+           //muda o pontaeiro do dataset para o registro selecionado
+           dtmDados.qryUsuarios.RecNo := gridUsuarios.Row;
+
+           //preenchendo os campos com os dados do registro selecionado
+           edtNome.Text := dtmDados.qryUsuarios.FieldByName('usuario_nome').AsString;
+           edtLogin.Text := dtmDados.qryUsuarios.FieldByName('usuario_login').AsString;
+           edtSenha.Text := dtmDados.qryUsuarios.FieldByName('usuario_senha').AsString;
+           cboTipo.ItemIndex := cboTipo.Items.IndexOf(dtmDados.qryUsuarios.FieldByName('usuario_tipo').Asstring);
+        end;
+    end;
+
+
+
+
+
+
+
 
 procedure TfrmUsuarios.gridUsuariosDrawCell(Sender: TObject; ACol,
 
@@ -463,58 +493,6 @@ begin
    end;
 
  end;
-
-
-
-{
-
-  Atualização parte 1
-
-  Esse codigo vai pegar os dados que estão na linha selecionada
-
-}
-
-procedure TfrmUsuarios.gridUsuariosSelectCell(Sender: TObject; ACol,
-
-  ARow: LongInt; var CanSelect: Boolean);
-
-
-
-begin
-
-
-
-   // como a linha zero e o cabeçalho os dados estaão aparecendo apartirr da linha 1
-
-
-
-   dtmDados.qryUsuarios.RecNo := Arow; //pegando o id que esta na celula
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('nome').AsString;
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('login').AsString;
-
-   edtNome.Text := dtmDados.qryUsuarios.FieldByName('tipo').AsString;
-
-
-
-   //passando o id do usuarios selecionado pra uma varivel privada
-
-
-
-   FIdSelecionado := dtmDados.qryUsuarios.FieldByName('id').AsInteger;
-
-
-
-
-
-
-
-end;
-
-
-
-
 
 
 

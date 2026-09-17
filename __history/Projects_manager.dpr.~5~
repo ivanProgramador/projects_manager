@@ -2,17 +2,19 @@ program Projects_manager;
 
 uses
   Vcl.Forms,
-  uTelaPrincipal in 'Telas\uTelaPrincipal.pas' {frmTelaPrincipal},
-  uUsuarios in 'Telas\uUsuarios.pas' {frmUsuarios};
+  uTelaPrincipal in 'Telas\uTelaPrincipal.pas' {Form1},
+  uCadastrar_novo_usuario in 'Telas\uCadastrar_novo_usuario.pas' {frmCad_usuario},
+  uEditar_usuario in 'Telas\uEditar_usuario.pas' {frmEdit_usuario},
+  uListaUsuarios in 'Telas\uListaUsuarios.pas' {frmUsuarios};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmTelaPrincipal, frmTelaPrincipal);
-  Application.CreateForm(TfrmUsuarios, frmUsuarios);
-  Application.CreateForm(TfrmUsuarios, frmUsuarios);
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmCad_usuario, frmCad_usuario);
+  Application.CreateForm(TfrmEdit_usuario, frmEdit_usuario);
   Application.CreateForm(TfrmUsuarios, frmUsuarios);
   Application.Run;
 end.

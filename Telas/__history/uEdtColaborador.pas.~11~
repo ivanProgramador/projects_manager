@@ -1,0 +1,29 @@
+unit uEdtColaborador;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
+  JvExButtons, JvBitBtn, JvExStdCtrls, JvCombobox, JvEdit, JvExControls, JvLabel;
+
+type
+  TfrmEdtCol = class(TForm)
+
+  private
+    FidUsuario: integer;
+
+  public
+    property IdUsuario: Integer read FIDUsuario write FIDUsuario;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+
+
+
+end.

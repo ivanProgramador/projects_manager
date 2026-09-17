@@ -1,0 +1,145 @@
+object frmEdicaoUsuario: TfrmEdicaoUsuario
+  Left = 0
+  Top = 0
+  Caption = 'Edi'#231#227'o de usuario'
+  ClientHeight = 321
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnShow = FormShow
+  TextHeight = 15
+  object lblCodigo: TJvLabel
+    Left = 21
+    Top = 32
+    Width = 50
+    Height = 15
+    Caption = 'CODIGO:'
+    Transparent = True
+  end
+  object lblNome: TJvLabel
+    Left = 21
+    Top = 85
+    Width = 40
+    Height = 15
+    Caption = 'NOME:'
+    Transparent = True
+  end
+  object lblEmail: TJvLabel
+    Left = 21
+    Top = 106
+    Width = 44
+    Height = 15
+    Caption = 'E-MAIL:'
+    Transparent = True
+  end
+  object JvLabel1: TJvLabel
+    Left = 21
+    Top = 201
+    Width = 43
+    Height = 15
+    Caption = 'SENHA:'
+    Transparent = True
+  end
+  object lblCargo: TJvLabel
+    Left = 21
+    Top = 135
+    Width = 45
+    Height = 15
+    Caption = 'CARGO:'
+    Transparent = True
+  end
+  object lblSituacao: TJvLabel
+    Left = 21
+    Top = 172
+    Width = 62
+    Height = 15
+    Caption = 'SITUA'#199#195'O:'
+    Transparent = True
+  end
+  object lblUsuCod: TJvLabel
+    Left = 93
+    Top = 32
+    Width = 57
+    Height = 15
+    Caption = 'lblUsuCod'
+    Transparent = True
+  end
+  object edtNome: TJvEdit
+    Left = 93
+    Top = 77
+    Width = 484
+    Height = 23
+    TabOrder = 0
+    Text = ''
+  end
+  object edtEmail: TJvEdit
+    Left = 93
+    Top = 106
+    Width = 484
+    Height = 23
+    TabOrder = 1
+    Text = ''
+  end
+  object edtSenha: TJvEdit
+    Left = 93
+    Top = 201
+    Width = 484
+    Height = 23
+    PasswordChar = #9679
+    TabOrder = 2
+    Text = ''
+  end
+  object cboCargo: TJvComboBox
+    Left = 93
+    Top = 135
+    Width = 484
+    Height = 23
+    TabOrder = 3
+    Text = 'USUARIO'
+    Items.Strings = (
+      'GESTOR'
+      'USUARIO')
+    ItemIndex = 1
+  end
+  object JvComboBox1: TJvComboBox
+    Left = 93
+    Top = 172
+    Width = 484
+    Height = 23
+    TabOrder = 4
+    Text = 'INATIVO'
+    Items.Strings = (
+      'ATIVO'
+      'INATIVO')
+    ItemIndex = 1
+  end
+  object btnAtualizar: TJvBitBtn
+    Left = 21
+    Top = 256
+    Width = 180
+    Height = 25
+    Caption = 'Atualizar'
+    TabOrder = 5
+    OnClick = btnAtualizarClick
+  end
+  object btnExcluir: TJvBitBtn
+    Left = 238
+    Top = 256
+    Width = 179
+    Height = 25
+    Caption = 'Exluir'
+    TabOrder = 6
+  end
+  object btnCancelar: TJvBitBtn
+    Left = 448
+    Top = 256
+    Width = 129
+    Height = 25
+    Caption = 'Cancelar'
+    TabOrder = 7
+  end
+end

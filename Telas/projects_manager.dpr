@@ -1,0 +1,32 @@
+program projects_manager;
+
+uses
+  Vcl.Forms,
+  uTelaPrincipal in 'uTelaPrincipal.pas' {frmPrincipal},
+  uCadColaboradores in 'uCadColaboradores.pas' {formColaboradores},
+  uDtmDados in '..\componentes\uDtmDados.pas' {dtmDados: TDataModule},
+  uTelaEdicaoUsuario in 'uTelaEdicaoUsuario.pas' {frmEdicaoUsuario},
+  uCadProjeto in 'uCadProjeto.pas' {frmCadProjeto},
+  uTelaDeEdicaoProjeto in 'uTelaDeEdicaoProjeto.pas' {frmEdtProjeto},
+  uCadTarefas in 'uCadTarefas.pas' {frmCadTarefa},
+  uEdtTarefa in 'uEdtTarefa.pas' {frmEditarTarefa},
+  uTelaDash in 'uTelaDash.pas' {frmDash};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TformColaboradores, formColaboradores);
+  Application.CreateForm(TformColaboradores, formColaboradores);
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TfrmEdicaoUsuario, frmEdicaoUsuario);
+  Application.CreateForm(TfrmCadProjeto, frmCadProjeto);
+  Application.CreateForm(TfrmEdtProjeto, frmEdtProjeto);
+  Application.CreateForm(TfrmCadTarefa, frmCadTarefa);
+  Application.CreateForm(TfrmEditarTarefa, frmEditarTarefa);
+  Application.CreateForm(TfrmDash, frmDash);
+  Application.Run;
+end.

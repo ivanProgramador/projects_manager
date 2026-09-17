@@ -1,53 +1,44 @@
-CREATE TABLE projects_manager
 
-tabela de usuarios 
-----------------------------------------------------------------------------------------------------------
-CREATE TABLE usuarios(
-   usuarioId int identity primary key,
-   usuario_nome varchar(100) not null,
-   usuario_login varchar(80) not null,
-   usuario_senha varchar(80)not null ,
-   usuario_tipo  int not null 
-); 
+USE projects_manager;
 
-insert 
- 
-   INSERT INTO usuarios(usuario_nome,usuario_login,usuario_senha,usuario_tipo) VALUES ('joao','joao','Aa123456',1)
+USE projects_manager;
+GO
 
-update
+--•	Cadastro de Colaboradores (Código, Nome, E-mail, Cargo e Situação).
 
-   UPDATE usuarios
-   SET usuario_nome ='TESTE',usuario_login='TESTE',usuario_senha='TESTE',usuario_tipo=1
-   WHERE usuarioId=1;
+CREATE TABLE colaboradores(
 
-select 
-   
-   SELECT * FROM usuarios
+	  id_colaborador INT PRIMARY KEY IDENTITY(1,1),
+	  codigo_colaborador INT NOT NULL UNIQUE,
+	  nome_colaborador varchar(80)not null,
+	  email_colaborador varchar(80) not null, 
+	  cargo_colaborador varchar(80)not null ,
+	  situacao_colaborador varchar(80) not null,
+	  senha_colaborador varchar(80)not null
+);
 
-delete 
-   
-   DELETE FROM usuarios WHERE usuarioId = 1
-   
---------------------------------------------------------------------------------------------------------------
+--•	Cadastro de Projetos (Código, Nome, Descrição, Datas e Status).
 
+CREATE TABLE Projetos(
 
-CREATE TABLE projetos(
-   projetoId int identity primary key,
-   projeto_nome varchar(100) not null,
-   projeto_objetivo varchar(80) not null,
-   prazo date,
-   custo_inicial money,
-   custo_final money,
-   status_atual int
- ); 
+	  id_projeto INT PRIMARY KEY IDENTITY(1,1),
+	  codigo_projeto INT NOT NULL UNIQUE,
+	  nome_projeto varchar(80)not null,
+	  descricao_projeto varchar(80) not null, 
+	  data_criacao varchar(80)not null,
+	  data_conclusao varchar(80),
+	  status_projeto varchar(80) not null,
+);
 
- CREATE TABLE atividade (
-   atividadeId int identity primary key,
-   atividade_descricao varchar(100) not null,
-   atividade_prazo varchar(80) not null,
-   status_atual int
-   projeto_id int not null
- ); 
- 
+--•	Cadastro de Tarefas (Projeto, Responsável, Descrição, Prioridade, Datas e Situação).
 
-
+CREATE TABLE Tarefas (
+    id_tarefa INT IDENTITY(1,1) PRIMARY KEY,
+    ProjetoId INT NOT NULL,           -- Seleção de "Lista de Projetos"
+    ColaboradorId INT NOT NULL,       -- Seleção de "Lista de Colaboradores"
+    Descricao VARCHAR(255) NOT NULL,  -- Campo "Descrição"
+    Prioridade VARCHAR(20) NOT NULL,  -- Seleção de "Prioridade" (ALTA, MEDIA, BAIXA)
+    Situacao VARCHAR(30) NOT NULL DEFAULT 'PENDENTE', -- Situação/Status da tarefa
+    DataInicial DATE NOT NULL,        -- Campo "Data inicial"
+    DataFinal DATE NULL               -- Campo "Data final"
+);

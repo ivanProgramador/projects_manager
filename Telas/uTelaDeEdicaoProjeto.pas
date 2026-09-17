@@ -1,0 +1,245 @@
+  unit uTelaDeEdicaoProjeto;
+
+  interface
+
+  uses
+    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.StdCtrls,
+    JvExStdCtrls, JvCombobox, Vcl.Mask, JvExMask, JvToolEdit, JvEdit, Vcl.Buttons,
+    JvExButtons, JvBitBtn,Data.DB;
+
+  type
+    TfrmEdtProjeto = class(TForm)
+      lblCodigo: TJvLabel;
+      lblNome: TJvLabel;
+      lblDescricao: TJvLabel;
+      lblDataCriacao: TJvLabel;
+      lblDataConclusao: TJvLabel;
+      lblStatus: TJvLabel;
+      edtNome: TJvEdit;
+      edtDescricao: TJvEdit;
+      edtDataCriacao: TJvDateEdit;
+      edtDataConclusao: TJvDateEdit;
+      cboStatus: TJvComboBox;
+      lblCodProjeto: TJvLabel;
+      btnAtualizar: TJvBitBtn;
+      btnDeletar: TJvBitBtn;
+      btnCancelar: TJvBitBtn;
+      btnEncerrar: TJvBitBtn;
+      procedure FormShow(Sender: TObject);
+      procedure btnAtualizarClick(Sender: TObject);
+      procedure btnDeletarClick(Sender: TObject);
+      procedure btnCancelarClick(Sender: TObject);
+      procedure btnEncerrarClick(Sender: TObject);
+    private
+      FidProjeto:integer;
+      procedure CarregarDados;
+
+    public
+
+       property IdProjeto: Integer read FidProjeto write FidProjeto;
+
+    end;
+
+  var
+    frmEdtProjeto: TfrmEdtProjeto;
+
+  implementation
+
+  {$R *.dfm}
+
+  uses uDtmDados;
+
+   //lembrar de sempre puxar metodos delclados pela classe e não pelo objeto
+
+   procedure TfrmEdtProjeto.btnAtualizarClick(Sender: TObject);
+  begin
+      try
+
+     
+        dtmDados.qryProjetos.Close;
+        dtmDados.qryProjetos.SQL.Clear;
+        dtmDados.qryProjetos.SQL.Add('UPDATE dbo.Projetos SET ');
+        dtmDados.qryProjetos.SQL.Add(' nome_projeto = :nome_projeto, ');
+        dtmDados.qryProjetos.SQL.Add(' descricao_projeto = :descricao_projeto, ');
+        dtmDados.qryProjetos.SQL.Add(' data_criacao = :data_criacao, ');
+        dtmDados.qryProjetos.SQL.Add(' data_conclusao = :data_conclusao, ');
+        dtmDados.qryProjetos.SQL.Add(' status_projeto = :status_projeto ');
+        dtmDados.qryProjetos.SQL.Add(' WHERE id_projeto = :id_projeto ');
+
+        dtmDados.qryProjetos.Parameters.ParamByName('nome_projeto').Value := edtNome.Text;
+        dtmDados.qryProjetos.Parameters.ParamByName('descricao_projeto').Value := edtDescricao.Text;
+        dtmDados.qryProjetos.Parameters.ParamByName('data_criacao').Value := edtDataCriacao.Date;
+        dtmDados.qryProjetos.Parameters.ParamByName('data_conclusao').Value := edtDataConclusao.Date;
+        dtmDados.qryProjetos.Parameters.ParamByName('status_projeto').Value := cboStatus.Text;
+        dtmDados.qryProjetos.Parameters.ParamByName('id_projeto').Value := FidProjeto;
+
+        dtmDados.qryProjetos.ExecSQL;
+
+        ShowMessage('Dados atualizados com sucesso ');
+
+        ModalResult := mrOk;
+
+         except
+          on E: Exception do
+          ShowMessage('Erro ao carregar dados do projeto: ' + E.Message);
+      end;
+  end;
+
+  procedure TfrmEdtProjeto.btnCancelarClick(Sender: TObject);
+  begin
+       ShowMessage('Nenhuma alteração foi feita');
+     ModalResult := mrOk;
+  end;
+
+  procedure TfrmEdtProjeto.btnDeletarClick(Sender: TObject);
+  var
+    TarefasPendentes: Integer;
+  begin
+    // 1. Consulta se o projeto possui tarefas ativas/pendentes
+    dtmDados.qryTarefas.Close;
+    dtmDados.qryTarefas.SQL.Clear;
+    dtmDados.qryTarefas.SQL.Text :=
+      'SELECT COUNT(*) AS QtdPendentes ' +
+      'FROM dbo.Tarefas ' +
+      'WHERE ProjetoId = :ProjetoId ' +
+      '  AND UPPER(Situacao) NOT IN (''CANCELADA'', ''ENCERRADA'')';
+
+    dtmDados.qryTarefas.Parameters.ParamByName('ProjetoId').Value := FIdProjeto; // Substitua pela sua variável de ID do projeto
+    dtmDados.qryTarefas.Open;
+
+    TarefasPendentes := dtmDados.qryTarefas.FieldByName('QtdPendentes').AsInteger;
+    dtmDados.qryTarefas.Close;
+
+    // 2. Trava a exclusão se existirem tarefas pendentes
+    if TarefasPendentes > 0 then
+    begin
+      ShowMessage('Não é possível excluir o projeto! Existem ' +
+        IntToStr(TarefasPendentes) + ' tarefa(s) pendente(s) vinculada(s) a ele.');
+      Exit; // Interrompe a execução
+    end;
+
+    // 3. Pede confirmação antes de excluir o registro no banco
+    if MessageDlg('Deseja realmente excluir este projeto? Esta ação não poderá ser desfeita.',
+      mtWarning, [mbYes, mbNo], 0) = mrYes then
+    begin
+      try
+        dtmDados.qryProjetos.Close;
+        dtmDados.qryProjetos.SQL.Clear;
+        dtmDados.qryProjetos.SQL.Text :=
+          'DELETE FROM dbo.Projetos WHERE id_projeto = :IdProjeto';
+
+        dtmDados.qryProjetos.Parameters.ParamByName('IdProjeto').Value := FIdProjeto;
+        dtmDados.qryProjetos.ExecSQL;
+
+        ShowMessage('Projeto excluído com sucesso!');
+
+        // Fecha a tela informando mrOk para atualizar a grid principal
+        ModalResult := mrOk;
+
+      except
+        on E: Exception do
+          ShowMessage('Erro ao excluir projeto: ' + E.Message);
+      end;
+    end;
+  end;
+
+
+
+  procedure TfrmEdtProjeto.btnEncerrarClick(Sender: TObject);
+  var
+    TarefasPendentes: Integer;
+  begin
+    // 1. Consulta se existem tarefas vinculadas que NÃO estejam CANCELADA nem ENCERRADA
+    dtmDados.qryTarefas.Close;
+    dtmDados.qryTarefas.SQL.Clear;
+    dtmDados.qryTarefas.SQL.Text :=
+      'SELECT COUNT(*) AS QtdPendentes ' +
+      'FROM dbo.Tarefas ' +
+      'WHERE ProjetoId = :ProjetoId ' +
+      '  AND UPPER(Situacao) NOT IN (''CANCELADA'', ''ENCERRADA'')';
+
+    dtmDados.qryTarefas.Parameters.ParamByName('ProjetoId').Value := FIdProjeto; // Altere para a sua variável de ID se for diferente
+    dtmDados.qryTarefas.Open;
+
+    TarefasPendentes := dtmDados.qryTarefas.FieldByName('QtdPendentes').AsInteger;
+    dtmDados.qryTarefas.Close;
+
+    // 2. Trava o encerramento se houver tarefas ativas ou pausadas
+    if TarefasPendentes > 0 then
+    begin
+      ShowMessage('Não é possível encerrar o projeto! Existem ' +
+        IntToStr(TarefasPendentes) + ' tarefa(s) pendente(s) associada(s) a ele.');
+      Exit;
+    end;
+
+    // 3. Confirmação do usuário
+    if MessageDlg('Todas as tarefas deste projeto estão finalizadas/canceladas. Deseja realmente encerrá-lo?',
+      mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      try
+        // 4. Executa o UPDATE com os nomes de colunas reais do banco (status_projeto e data_conclusao)
+        dtmDados.qryProjetos.Close;
+        dtmDados.qryProjetos.SQL.Clear;
+        dtmDados.qryProjetos.SQL.Text :=
+          'UPDATE dbo.Projetos ' +
+          'SET status_projeto = :status_projeto, ' +
+          '    data_conclusao = :data_conclusao ' +
+          'WHERE id_projeto = :IdProjeto';
+
+        dtmDados.qryProjetos.Parameters.ParamByName('status_projeto').Value := 'ENCERRADO';
+        dtmDados.qryProjetos.Parameters.ParamByName('data_conclusao').Value := Date;
+        dtmDados.qryProjetos.Parameters.ParamByName('IdProjeto').Value := FIdProjeto;
+
+        dtmDados.qryProjetos.ExecSQL;
+
+        ShowMessage('Projeto encerrado com sucesso!');
+
+        // 5. Retorna mrOk para fechar a tela e sinalizar atualização na grid principal
+        ModalResult := mrOk;
+
+      except
+        on E: Exception do
+          ShowMessage('Erro ao encerrar projeto: ' + E.Message);
+      end;
+    end;
+  end;
+
+  procedure TfrmEdtProjeto.CarregarDados;
+     begin
+
+      try
+           //preparando a query select usando o id como parametro
+
+           dtmDados.qryProjetos.Close;
+           dtmDados.qryProjetos.SQL.Clear;
+           dtmDados.qryProjetos.SQL.Add('SELECT codigo_projeto, nome_projeto, descricao_projeto, data_criacao, data_conclusao, status_projeto FROM dbo.Projetos WHERE id_projeto = :id_projeto');
+           dtmDados.qryProjetos.Parameters.ParamByName('id_projeto').Value := FidProjeto;
+
+           //excutando a querye e abrindo o resultado
+           dtmDados.qryProjetos.Open;
+
+           if not dtmDados.qryProjetos.IsEmpty then
+                begin
+                  lblCodProjeto.Caption := dtmDados.qryProjetos.FieldByName('codigo_projeto').AsString;
+                  edtNome.Text := dtmDados.qryProjetos.FieldByName('nome_projeto').AsString;
+                  edtDescricao.Text := dtmDados.qryProjetos.FieldByName('descricao_projeto').AsString;
+
+                  edtDataCriacao.Date   := dtmDados.qryProjetos.FieldByName('data_criacao').AsDateTime;
+                  edtDataConclusao.Date   := dtmDados.qryProjetos.FieldByName('data_conclusao').AsDateTime;
+                  cboStatus.Text        := dtmDados.qryProjetos.FieldByName('status_projeto').AsString;
+           end;
+
+
+       except
+          on E: Exception do
+          ShowMessage('Erro ao carregar dados do projeto: ' + E.Message);
+       end;
+     end;
+
+  procedure TfrmEdtProjeto.FormShow(Sender: TObject);
+  begin
+       CarregarDados;
+  end;
+
+  end.

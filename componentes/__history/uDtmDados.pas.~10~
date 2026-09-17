@@ -1,0 +1,38 @@
+unit uDtmDados;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, Data.DB, Data.Win.ADODB;
+
+type
+  TdtmDados = class(TDataModule)
+    AdoConexao: TADOConnection;
+    qryUsuarios: TADOQuery;
+    dsUsuarios: TDataSource;
+    qrySelectUsuarios: TADOQuery;
+    qrySelectUsuarioscodigo_colaborador: TIntegerField;
+    qrySelectUsuariosnome_colaborador: TStringField;
+    qrySelectUsuariosemail_colaborador: TStringField;
+    qrySelectUsuarioscargo_colaborador: TStringField;
+    qrySelectUsuariossituacao_colaborador: TStringField;
+    qrySelectUsuariosid_colaborador: TAutoIncField;
+    qryProjetos: TADOQuery;
+    qrySelectProjetos: TADOQuery;
+    dsProjetos: TDataSource;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  dtmDados: TdtmDados;
+
+implementation
+
+{%CLASSGROUP 'Vcl.Controls.TControl'}
+
+{$R *.dfm}
+
+end.

@@ -1,0 +1,277 @@
+object frmCadTarefa: TfrmCadTarefa
+  Left = 0
+  Top = 0
+  Caption = 'CADASTRO DE TAREFAS'
+  ClientHeight = 409
+  ClientWidth = 914
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnShow = FormShow
+  TextHeight = 15
+  object lblListaColab: TJvLabel
+    Left = 8
+    Top = 118
+    Width = 122
+    Height = 15
+    Caption = 'Lista de Colaboradores'
+    Transparent = True
+  end
+  object blbListaProjetos: TJvLabel
+    Left = 8
+    Top = 80
+    Width = 91
+    Height = 15
+    Caption = 'Lista de Projetos:'
+    Transparent = True
+  end
+  object lblDescricao: TJvLabel
+    Left = 8
+    Top = 176
+    Width = 56
+    Height = 15
+    Caption = 'Descri'#231#227'o:'
+    Transparent = True
+  end
+  object lblDatatInicial: TJvLabel
+    Left = 8
+    Top = 256
+    Width = 63
+    Height = 15
+    Caption = 'Data inicial:'
+    Transparent = True
+  end
+  object lblPrioridade: TJvLabel
+    Left = 8
+    Top = 216
+    Width = 59
+    Height = 15
+    Caption = 'Prioridade:'
+    Transparent = True
+  end
+  object lblDataFinal: TJvLabel
+    Left = 8
+    Top = 288
+    Width = 55
+    Height = 15
+    Caption = 'Data final:'
+    Transparent = True
+  end
+  object JvLabel1: TJvLabel
+    Left = 344
+    Top = 72
+    Width = 65
+    Height = 15
+    Caption = 'PESQUISAR:'
+    Transparent = True
+  end
+  object JvLabel2: TJvLabel
+    Left = 8
+    Top = 325
+    Width = 50
+    Height = 15
+    Caption = 'Situa'#231#227'o:'
+    Transparent = True
+  end
+  object cboUsuarios: TJvComboBox
+    Left = 152
+    Top = 110
+    Width = 161
+    Height = 23
+    TabOrder = 0
+    Text = 'Bruna'
+    Items.Strings = (
+      'Ana'
+      'Bruna'
+      'Carlos'
+      'Daniel'
+      'Francisco')
+    ItemIndex = 1
+  end
+  object cboProjetos: TJvComboBox
+    Left = 144
+    Top = 72
+    Width = 169
+    Height = 23
+    TabOrder = 1
+    Text = 'INSTALA'#199#195'O LOJA 2'
+    Items.Strings = (
+      'INSTALA'#199#195'O LOJA 1'
+      'INSTALA'#199#195'O LOJA 2'
+      'INSTALA'#199#195'O LOJA 3'
+      'INSTALA'#199#195'O LOJA 4')
+    ItemIndex = 1
+  end
+  object edtDescricao: TJvEdit
+    Left = 88
+    Top = 168
+    Width = 225
+    Height = 23
+    TabOrder = 2
+    Text = ''
+  end
+  object cboPrioridade: TJvComboBox
+    Left = 88
+    Top = 208
+    Width = 225
+    Height = 23
+    TabOrder = 3
+    Text = 'MEDIA'
+    Items.Strings = (
+      'ALTA'
+      'MEDIA'
+      'BAIXA')
+  end
+  object edtDataInicial: TJvDateEdit
+    Left = 88
+    Top = 248
+    Width = 225
+    Height = 23
+    ShowNullDate = False
+    TabOrder = 4
+  end
+  object edtDataFinal: TJvDateEdit
+    Left = 88
+    Top = 280
+    Width = 225
+    Height = 23
+    ShowNullDate = False
+    TabOrder = 5
+  end
+  object grdTarefas: TDBGrid
+    Left = 336
+    Top = 168
+    Width = 553
+    Height = 213
+    DataSource = dtmDados.dsTarefas
+    TabOrder = 6
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    OnDblClick = grdTarefasDblClick
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'id_tarefa'
+        Title.Caption = 'ID'
+        Width = 33
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'Responsavel'
+        Width = 76
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DataInicial'
+        Title.Caption = 'Data inicial'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DataFinal'
+        Title.Caption = 'Data Final'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'projeto'
+        Width = 91
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'Situacao'
+        Width = 100
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'Prioridade'
+        Width = 100
+        Visible = True
+      end>
+  end
+  object edtPesquisar: TJvEdit
+    Left = 415
+    Top = 72
+    Width = 474
+    Height = 23
+    TabOrder = 7
+    Text = ''
+    OnChange = edtPesquisarChange
+  end
+  object btnCadastrar: TJvBitBtn
+    Left = 8
+    Top = 356
+    Width = 305
+    Height = 25
+    Caption = 'CADASTRAR'
+    TabOrder = 8
+    OnClick = btnCadastrarClick
+  end
+  object cboSituacao: TJvComboBox
+    Left = 88
+    Top = 317
+    Width = 225
+    Height = 23
+    TabOrder = 9
+    Text = 'EM ANDAMENTO'
+    Items.Strings = (
+      'EM ANDAMENTO'
+      'CANCELADA'
+      'PAUSADA'
+      'CONCLUIDA'
+      'ESPERANDO RETORNO'
+      'ENCERRADA'
+      'PENDENTE')
+  end
+  object rgOpcoesPesquisa: TJvRadioGroup
+    Left = 336
+    Top = 101
+    Width = 553
+    Height = 52
+    Caption = 'Op'#231#245'es de pesquisa'
+    TabOrder = 10
+  end
+  object rbNome: TJvRadioButton
+    Left = 344
+    Top = 128
+    Width = 54
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Nome'
+    TabOrder = 11
+    OnClick = rbNomeClick
+    LinkedControls = <>
+  end
+  object rbStatus: TJvRadioButton
+    Left = 448
+    Top = 128
+    Width = 53
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Status'
+    TabOrder = 12
+    OnClick = rbStatusClick
+    LinkedControls = <>
+  end
+  object rbResponsavel: TJvRadioButton
+    Left = 536
+    Top = 128
+    Width = 86
+    Height = 17
+    Alignment = taLeftJustify
+    Caption = 'Responsavel'
+    TabOrder = 13
+    OnClick = rbResponsavelClick
+    LinkedControls = <>
+  end
+end

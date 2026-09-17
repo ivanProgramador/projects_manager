@@ -1,0 +1,216 @@
+  unit uCadColaboradores;
+
+  interface
+
+  uses
+    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+    Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, JvExStdCtrls, JvCombobox,
+    JvExControls, JvLabel, JvEdit, Vcl.Buttons, JvExButtons, JvBitBtn, Data.DB,
+    Vcl.Grids, Vcl.DBGrids;
+
+  type
+    TformColaboradores = class(TForm)
+      edtColCodigo: TJvEdit;
+      lblCodigo: TJvLabel;
+      edtColNome: TJvEdit;
+      lblNome: TJvLabel;
+      edtColEmail: TJvEdit;
+      lblEmail: TJvLabel;
+      lblCargo: TJvLabel;
+      JvLabel5: TJvLabel;
+      cboColSituacao: TJvComboBox;
+      cboColCargo: TJvComboBox;
+      btnCadastrar: TJvBitBtn;
+      lblSenha: TJvLabel;
+      edtColSenha: TJvEdit;
+      grdUsuarios: TDBGrid;
+      lblPesquisar: TJvLabel;
+      edtPesquisar: TJvEdit;
+      procedure btnCadastrarClick(Sender: TObject);
+      procedure FormShow(Sender: TObject);
+      procedure grdUsuariosDblClick(Sender: TObject);
+      procedure edtPesquisarChange(Sender: TObject);
+
+
+
+
+    private
+      procedure CarregarDadosGrid;
+    public
+      { Public declarations }
+    end;
+
+  var
+    formColaboradores: TformColaboradores;
+
+  implementation
+
+  {$R *.dfm}
+
+  uses uDtmDados, uEdtColaborador, uTelaPrincipal, uTelaEdicaoUsuario;
+
+
+
+
+
+  procedure TformColaboradores.FormShow(Sender: TObject);
+  begin
+    CarregarDadosGrid;
+  end;
+
+
+
+  procedure TformColaboradores.CarregarDadosGrid;
+  begin
+     // 1. Solta o DataSet da Grid temporariamente
+    grdUsuarios.DataSource.DataSet := nil;
+
+    // 2. Fecha a Query do SELECT e limpa os filtro
+    dtmDados.qrySelectUsuarios.Close;
+    dtmDados.qrySelectUsuarios.Filtered := False;
+
+    // 3. fecha a qry e Reabre
+    dtmDados.qrySelectUsuarios.SQL.Text :=
+      'SELECT id_colaborador, codigo_colaborador, nome_colaborador, email_colaborador, ' +
+      'cargo_colaborador, situacao_colaborador FROM dbo.colaboradores';
+    dtmDados.qrySelectUsuarios.Open;
+
+    // 4. boata o  DataSet de volta na  Grid
+    grdUsuarios.DataSource.DataSet := dtmDados.qrySelectUsuarios;
+  end;
+
+
+ procedure TformColaboradores.edtPesquisarChange(Sender: TObject);
+    var
+     DataSet:TDataSet;
+     TextoBusca: string;
+  begin
+     if (grdUsuarios.DataSource <> nil) and (grdUsuarios.DataSource.DataSet <> nil) then
+    begin
+      DataSet := grdUsuarios.DataSource.DataSet;
+      TextoBusca := Trim(edtPesquisar.Text);
+
+      if TextoBusca = '' then
+      begin
+        DataSet.Filtered := False;
+      end
+      else
+      begin
+        DataSet.Filtered := False;
+
+        // Substitua 'NOME' pelo nome exato do campo na sua tabela/query (ex: 'NOME', 'nome_colaborador')
+        DataSet.Filter := 'nome_colaborador LIKE ' + QuotedStr('*' + TextoBusca + '*');
+
+        DataSet.Filtered := True;
+      end;
+    end;
+
+  end;
+
+
+
+
+
+
+
+
+
+
+
+  procedure TformColaboradores.grdUsuariosDblClick(Sender: TObject);
+    var
+      idUsuarioSelecionado:integer;
+      FormEdt:TfrmEdicaoUsuario;
+
+    begin
+         // acessando o dataset de forma direto pelo data soruce
+         if(grdUsuarios.DataSource <> nil) and (grdUsuarios.DataSource.DataSet <> nil) and
+           (not grdUsuarios.DataSource.DataSet.IsEmpty) then
+         begin
+
+            //pegando o id direto do dataset
+             idUsuarioSelecionado := grdUsuarios.DataSource.DataSet.FieldByName('id_colaborador').AsInteger;
+
+
+             FormEdt := TfrmEdicaoUsuario.Create(Self);
+
+             try
+                    FormEdt.IdUsuario := idUsuarioSelecionado;
+
+                    // Se a tela de edição fechar confirmando a alteração (mrOk)
+                    if FormEdt.ShowModal = mrOk then
+                    begin
+                      // Atualiza a grid recarregando o DataSet
+                      grdUsuarios.DataSource.DataSet.Refresh;
+                    end;
+            finally
+              FormEdt.Free;
+            end;
+
+
+         end;
+
+    end;
+
+
+
+
+
+
+
+  procedure TformColaboradores.btnCadastrarClick(Sender: TObject);
+  begin
+    try
+      if Trim(edtColCodigo.Text) = '' then
+      begin
+        ShowMessage('Informe o código do colaborador!');
+        Exit;
+      end;
+
+      dtmDados.qryUsuarios.Close;
+      dtmDados.qryUsuarios.SQL.Clear;
+      dtmDados.qryUsuarios.SQL.Add('INSERT INTO dbo.colaboradores (codigo_colaborador, nome_colaborador, email_colaborador, cargo_colaborador, situacao_colaborador, senha_colaborador)');
+      dtmDados.qryUsuarios.SQL.Add(' VALUES ');
+      dtmDados.qryUsuarios.SQL.Add('( :codigo, :nome, :email, :cargo, :situacao, :senha)');
+
+      dtmDados.qryUsuarios.Parameters.ParamByName('codigo').Value   := StrToInt(edtColCodigo.Text);
+      dtmDados.qryUsuarios.Parameters.ParamByName('nome').Value     := edtColNome.Text;
+      dtmDados.qryUsuarios.Parameters.ParamByName('email').Value    := edtColEmail.Text;
+      dtmDados.qryUsuarios.Parameters.ParamByName('cargo').Value    := cboColCargo.Text;
+      dtmDados.qryUsuarios.Parameters.ParamByName('situacao').Value := cboColSituacao.Text;
+      dtmDados.qryUsuarios.Parameters.ParamByName('senha').Value    := edtColSenha.Text;
+
+      dtmDados.qryUsuarios.ExecSQL;
+
+      ShowMessage('Usuário cadastrado com sucesso!');
+
+      edtColCodigo.Text := '';
+      edtColNome.Text := '';
+      edtColEmail.Text := '';
+      cboColCargo.ItemIndex := 0;
+      cboColSituacao.ItemIndex := 0;
+      edtColSenha.Text := '';
+
+      CarregarDadosGrid;
+
+      except
+      on E: Exception do
+      begin
+        // Identifica o erro de chave duplicada (UNIQUE KEY / PRIMARY KEY)
+        if (Pos('UNIQUE KEY', UpperCase(E.Message)) > 0) or
+           (Pos('PRIMARY KEY', UpperCase(E.Message)) > 0) or
+           (Pos('DUPLICATE KEY', UpperCase(E.Message)) > 0) then
+        begin
+          ShowMessage('Este código de usuário já foi cadastrado! Por favor, utilize outro.');
+          edtColCodigo.SetFocus;
+        end
+        else
+        begin
+          // Exibe qualquer outro erro inesperado
+          ShowMessage('Erro ao cadastrar: ' + E.Message);
+        end;
+      end;
+    end;
+  end;
+
+  end.

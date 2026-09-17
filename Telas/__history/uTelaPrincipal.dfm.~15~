@@ -1,0 +1,46 @@
+object frmPrincipal: TfrmPrincipal
+  Left = 0
+  Top = 0
+  Caption = 'Tela Principal'
+  ClientHeight = 339
+  ClientWidth = 757
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Menu = mnPrincipal
+  TextHeight = 15
+  object mnPrincipal: TJvMainMenu
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
+    Left = 24
+    Top = 8
+    object CADASTROS1: TMenuItem
+      Caption = 'CADASTROS'
+      object USUARIOS1: TMenuItem
+        Caption = 'COLABORADORES'
+        OnClick = USUARIOS1Click
+      end
+      object Projetos1: TMenuItem
+        Caption = 'PROJETOS'
+        OnClick = Projetos1Click
+      end
+      object AREFAS1: TMenuItem
+        Caption = 'TAREFAS'
+        OnClick = AREFAS1Click
+      end
+    end
+    object RELATRIOS1: TMenuItem
+      Caption = 'RELAT'#211'RIOS'
+      object DASHBOARD1: TMenuItem
+        Caption = 'DASHBOARD'
+      end
+    end
+  end
+end

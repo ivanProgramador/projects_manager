@@ -2,13 +2,15 @@ program Projects_manager;
 
 uses
   Vcl.Forms,
-  uTelaPrincipal in 'Telas\uTelaPrincipal.pas' {frmTelaPrincipal};
+  uTelaPrincipal in 'Telas\uTelaPrincipal.pas' {Form1},
+  uUsuarios in 'Telas\uUsuarios.pas' {frmUsuarios};
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
-  Application.CreateForm(TfrmTelaPrincipal, frmTelaPrincipal);
+  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TfrmUsuarios, frmUsuarios);
   Application.Run;
 end.

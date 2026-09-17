@@ -1,0 +1,23 @@
+program Project_manager;
+
+uses
+  Vcl.Forms,
+  DataModuleMain in 'componentes\DataModuleMain.pas' {dtmDados: TDataModule},
+  uPrincipal in 'Telas\uPrincipal.pas' {frmPrincipal},
+  uUsuarioEdit in 'Telas\uUsuarioEdit.pas' {frmUsuarioEdit},
+  FrmCadUsuarios in 'Telas\FrmCadUsuarios.pas' {frmUsuarios},
+  uCadProjetos in 'Telas\uCadProjetos.pas' {frmCadProjetos};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmUsuarios, frmUsuarios);
+  Application.CreateForm(TfrmUsuarioEdit, frmUsuarioEdit);
+  Application.CreateForm(TfrmUsuarios, frmUsuarios);
+  Application.CreateForm(TfrmCadProjetos, frmCadProjetos);
+  Application.Run;
+end.

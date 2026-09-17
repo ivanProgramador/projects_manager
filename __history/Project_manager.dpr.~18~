@@ -1,0 +1,32 @@
+program Project_manager;
+
+uses
+  Vcl.Forms,
+  DataModuleMain in 'componentes\DataModuleMain.pas' {dtmDados: TDataModule},
+  uPrincipal in 'Telas\uPrincipal.pas' {frmPrincipal},
+  uUsuarioEdit in 'Telas\uUsuarioEdit.pas' {frmUsuarioEdit},
+  FrmCadUsuarios in 'Telas\FrmCadUsuarios.pas' {frmUsuarios},
+  uCadProjetos in 'Telas\uCadProjetos.pas' {frmCadProjetos},
+  uTarefas in 'Telas\uTarefas.pas' {frmTarefas},
+  uProjetoDetalhes in 'Telas\uProjetoDetalhes.pas' {frmProjetoDetalhes},
+  unitTarefas in 'Telas\unitTarefas.pas' {frmAdcTarefa};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TfrmUsuarios, frmUsuarios);
+  Application.CreateForm(TfrmUsuarioEdit, frmUsuarioEdit);
+  Application.CreateForm(TfrmUsuarios, frmUsuarios);
+  Application.CreateForm(TfrmCadProjetos, frmCadProjetos);
+  Application.CreateForm(TfrmTarefas, frmTarefas);
+  Application.CreateForm(TfrmTarefas, frmTarefas);
+  Application.CreateForm(TfrmProjetoDetalhes, frmProjetoDetalhes);
+  Application.CreateForm(TfrmProjetoDetalhes, frmProjetoDetalhes);
+  Application.CreateForm(TfrmAdcTarefa, frmAdcTarefa);
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

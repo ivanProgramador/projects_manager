@@ -1,0 +1,246 @@
+unit uCadTarefas;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.StdCtrls,
+  JvExStdCtrls, JvCombobox, Data.DB, Vcl.Buttons, JvExButtons, JvBitBtn,
+  Vcl.Grids, Vcl.DBGrids, Vcl.Mask, JvExMask, JvToolEdit, JvEdit;
+
+type
+  TfrmCadTarefa = class(TForm)
+    cboUsuarios: TJvComboBox;
+    lblListaColab: TJvLabel;
+    blbListaProjetos: TJvLabel;
+    cboProjetos: TJvComboBox;
+    lblDescricao: TJvLabel;
+    edtDescricao: TJvEdit;
+    lblDatatInicial: TJvLabel;
+    cboPrioridade: TJvComboBox;
+    edtDataInicial: TJvDateEdit;
+    lblPrioridade: TJvLabel;
+    edtDataFinal: TJvDateEdit;
+    lblDataFinal: TJvLabel;
+    grdTarefas: TDBGrid;
+    JvLabel1: TJvLabel;
+    edtPesquisar: TJvEdit;
+    btnCadastrar: TJvBitBtn;
+    JvLabel2: TJvLabel;
+    cboSituacao: TJvComboBox;
+    procedure carregarGridTarefas;
+    procedure btnCadastrarClick(Sender: TObject);
+    procedure carregarProjetos;
+    procedure carregarUsuarios;
+    procedure FormShow(Sender: TObject);
+    procedure grdTarefasDblClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadTarefa: TfrmCadTarefa;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados, uEdtTarefa;
+
+procedure TfrmCadTarefa.carregarGridTarefas;
+begin
+  // Desconecta a grid brevemente para forçar a atualização visual (repintura)
+  grdTarefas.DataSource := nil;
+  try
+    dtmDados.qrySelectTarefas.Close;
+    dtmDados.qrySelectTarefas.Filtered := False;
+
+    dtmDados.qrySelectTarefas.SQL.Text :=
+      'SELECT T.id_tarefa, ' +
+      '       C.nome_colaborador AS Responsavel, ' +
+      '       T.DataInicial, ' +
+      '       T.DataFinal, ' +
+      '       P.nome_projeto AS projeto, ' +
+      '       T.Situacao, ' +
+      '       T.Prioridade ' +
+      'FROM dbo.Tarefas T ' +
+      'LEFT JOIN dbo.Projetos P ON P.id_projeto = T.ProjetoId ' +
+      'LEFT JOIN dbo.colaboradores C ON C.id_colaborador = T.ColaboradorId ' +
+      'ORDER BY T.id_tarefa DESC';
+
+    dtmDados.qrySelectTarefas.Open;
+  finally
+    // Reconecta a grid com a query atualizada
+    grdTarefas.DataSource := dtmDados.dsTarefas;
+  end;
+end;
+
+
+
+
+
+
+
+
+procedure TfrmCadTarefa.carregarProjetos;
+ begin
+      cboProjetos.Items.BeginUpdate;
+  try
+    cboProjetos.Items.Clear;
+
+        // Fazendo select
+            dtmDados.qryProjetos.Close;
+            dtmDados.qryProjetos.SQL.Text := 'SELECT id_projeto, nome_projeto FROM dbo.Projetos ORDER BY nome_projeto';
+            dtmDados.qryProjetos.Open;
+
+        // usando o wile pra buscar os insices e colocar no combo box
+        //cada uma vai ser um objeto com id e nome do projeto
+        while not dtmDados.qryProjetos.Eof do
+        begin
+          cboProjetos.Items.AddObject(
+            dtmDados.qryProjetos.FieldByName('nome_projeto').AsString,
+            TObject(IntPtr(dtmDados.qryProjetos.FieldByName('id_projeto').AsInteger))
+          );
+       dtmDados.qryProjetos.Next;
+       end;
+      finally
+        cboProjetos.Items.EndUpdate;
+      end;
+
+    if cboProjetos.Items.Count > 0 then
+      cboProjetos.ItemIndex := 0; // os items dos combo box fica dentro de uma raary então se eu coloco zero o primeiro item vira o padrão
+    end;
+
+
+
+
+  procedure TfrmCadTarefa.carregarUsuarios;
+  begin
+    cboUsuarios.Items.BeginUpdate;
+    try
+      cboUsuarios.Items.Clear;
+
+      dtmDados.qryUsuarios.Close;
+      dtmDados.qryUsuarios.SQL.Text :=
+        'SELECT id_colaborador, nome_colaborador ' +
+        'FROM dbo.colaboradores ' +
+        'WHERE UPPER(situacao_colaborador) = ''ATIVO'' ' + // pega os os ativos
+        'ORDER BY nome_colaborador';
+      dtmDados.qryUsuarios.Open;
+
+      while not dtmDados.qryUsuarios.Eof do
+      begin
+        cboUsuarios.Items.AddObject(
+          dtmDados.qryUsuarios.FieldByName('nome_colaborador').AsString,
+          TObject(IntPtr(dtmDados.qryUsuarios.FieldByName('id_colaborador').AsInteger))
+        );
+        dtmDados.qryUsuarios.Next;
+      end;
+    finally
+      cboUsuarios.Items.EndUpdate;
+    end;
+
+    if cboUsuarios.Items.Count > 0 then
+      cboUsuarios.ItemIndex := 0;
+  end;
+
+
+
+
+
+
+procedure TfrmCadTarefa.FormShow(Sender: TObject);
+begin
+  carregarProjetos;
+  carregarUsuarios;
+  carregarGridTarefas;
+end;
+
+procedure TfrmCadTarefa.grdTarefasDblClick(Sender: TObject);
+
+ var
+   IdTarefaSelecionada:integer;
+   FormEdtTarefa: TfrmEditarTarefa;
+begin
+    // acessando o dataset de forma direto pelo data soruce
+       if(grdTarefas.DataSource <> nil) and (grdTarefas.DataSource.DataSet <> nil) and
+         (not grdTarefas.DataSource.DataSet.IsEmpty) then
+       begin
+
+          //pegando o id direto do dataset
+           IdTarefaSelecionada := grdTarefas.DataSource.DataSet.FieldByName('id_tarefa').AsInteger;
+
+
+           FormEdtTarefa := TfrmEditarTarefa.Create(Self);
+
+           try
+                  FormEdtTarefa.IdTarefa := IdTarefaSelecionada;
+
+                  // Se a tela de edição fechar confirmando a alteração (mrOk)
+                  if FormEdtTarefa.ShowModal = mrOk then
+                  begin
+                    // Atualiza a grid recarregando o DataSet
+                    grdTarefas.DataSource.DataSet.Refresh;
+                  end;
+          finally
+            FormEdtTarefa.Free;
+          end;
+       end;
+
+ end;
+
+procedure TfrmCadTarefa.btnCadastrarClick(Sender: TObject);
+begin
+    try
+       //PREPARANDO A QUERY
+
+       dtmDados.qryTarefas.Close;
+       dtmDados.qryTarefas.SQL.Clear;
+       dtmDados.qryTarefas.SQL.Add('INSERT INTO dbo.Tarefas(ProjetoId,ColaboradorId,Descricao,Prioridade,Situacao,DataInicial,DataFinal) ');
+       dtmDados.qryTarefas.SQL.Add(' VALUES ');
+       dtmDados.qryTarefas.SQL.Add(' (:ProjetoId,:ColaboradorId,:Descricao,:Prioridade,:Situacao,:DataInicial,:DataFinal) ');
+
+       //PEGANDO OS VALORES DOS CAMPOS
+       //intptr esdta sendo usado parar uma daptação de arquitetura
+       //porque eu estou chamndo uma objeto dentro da memoria sem ele e teria varios warnigs
+       //dentro de um sistemna 64bit
+       dtmDados.qryTarefas.Parameters.ParamByName('ProjetoId').Value := Integer(IntPtr(cboProjetos.Items.Objects[cboProjetos.ItemIndex]));
+       dtmDados.qryTarefas.Parameters.ParamByName('ColaboradorId').Value := Integer(IntPtr(cboUsuarios.Items.Objects[cboUsuarios.ItemIndex]));
+       dtmDados.qryTarefas.Parameters.ParamByName('Descricao').Value := edtDescricao.Text;
+       dtmDados.qryTarefas.Parameters.ParamByName('Prioridade').Value := cboPrioridade.Text;
+       dtmDados.qryTarefas.Parameters.ParamByName('Situacao').Value :=   cboSituacao.Text;
+
+
+
+       dtmDados.qryTarefas.Parameters.ParamByName('DataInicial').DataType := ftDate;
+       dtmDados.qryTarefas.Parameters.ParamByName('DataInicial').Value := edtDataInicial.Date;
+       dtmDados.qryTarefas.Parameters.ParamByName('DataFinal').DataType := ftDate;
+       dtmDados.qryTarefas.Parameters.ParamByName('DataFinal').Value := edtDataFinal.Date;
+
+
+       dtmDados.qryTarefas.ExecSQL;
+
+       ShowMessage('Tarefa cadastrada com sucesso!');
+
+       edtDescricao.Text := '';
+       edtDataInicial.Date := Date;
+       edtDataFinal.Date := Date;
+       cboPrioridade.ItemIndex := 0;
+       cboSituacao.ItemIndex := 0;
+       cboUsuarios.ItemIndex := 0;
+       cboProjetos.ItemIndex := 0;
+
+       carregarGridTarefas;
+
+
+
+
+      except
+         on E: Exception do
+           ShowMessage('Erro ao cadastrar: ' + E.Message);
+       end;
+    end;
+end.
+

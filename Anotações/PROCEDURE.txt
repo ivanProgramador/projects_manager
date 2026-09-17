@@ -1,0 +1,29 @@
+CREATE PROCEDURE sp_ObterIndicesDashboard
+AS
+BEGIN
+    -- Evita o retorno de mensagens do tipo "(1 row(s) affected)" para melhorar a performance
+    SET NOCOUNT ON;
+
+    SELECT 
+        -- 1. Total de Projetos em Andamento
+        (SELECT COUNT(*) 
+         FROM dbo.Projetos 
+         WHERE UPPER(status_projeto) = 'EM ANDAMENTO') AS TotalProjetosAndamento,
+
+        -- 2. Total de Tarefas Pendentes
+        (SELECT COUNT(*) 
+         FROM dbo.Tarefas 
+         WHERE UPPER(Situacao) NOT IN ('ENCERRADA', 'CANCELADA')) AS TotalTarefasPendentes,
+
+        -- 3. Total de Tarefas Atrasadas
+        (SELECT COUNT(*) 
+         FROM dbo.Tarefas 
+         WHERE DataFinal < CAST(GETDATE() AS DATE) 
+           AND UPPER(Situacao) NOT IN ('ENCERRADA', 'CANCELADA')) AS TotalTarefasAtrasadas,
+
+        -- 4. Total de Colaboradores Ativos
+        (SELECT COUNT(*) 
+         FROM dbo.colaboradores 
+         WHERE UPPER(situacao_colaborador) = 'ATIVO') AS TotalColabAtivos;
+END;
+GO

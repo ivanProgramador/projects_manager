@@ -1,0 +1,111 @@
+unit uEdtTarefa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.StdCtrls,
+  JvExStdCtrls, JvCombobox, JvEdit, Vcl.Mask, JvExMask, JvToolEdit,Data.DB;
+
+type
+  TfrmEditarTarefa = class(TForm)
+    lblListaProjetos: TJvLabel;
+    JvLabel1: TJvLabel;
+    cboProjeto: TJvComboBox;
+    cboUsuarios: TJvComboBox;
+    lblDataInicio: TJvLabel;
+    edtDescricao: TJvEdit;
+    edtDataInicial: TJvDateEdit;
+    JvLabel2: TJvLabel;
+    edtDataFinal: TJvDateEdit;
+    lblDataFinal: TJvLabel;
+    cboSituacao: TJvComboBox;
+    JvLabel3: TJvLabel;
+    JvLabel4: TJvLabel;
+    cboPrioridade: TJvComboBox;
+    lblIdTarefa: TJvLabel;
+    idDaTarefa: TJvLabel;
+
+  private
+     FidTarefa :integer;
+     procedure SetIdTarefa(const Value: Integer);
+     procedure CarregadadosTarefa;
+
+
+  public
+     property IdTarefa: Integer read FidTarefa write SetIdTarefa;
+  end;
+
+var
+  frmEditarTarefa: TfrmEditarTarefa;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+procedure TfrmEditarTarefa.SetIdTarefa(const Value: Integer);
+begin
+  FidTarefa := Value;
+  CarregadadosTarefa; // Executa o carregamento assim que o ID for atribuído
+
+end;
+
+
+
+procedure TfrmEditarTarefa.CarregadadosTarefa;
+
+    begin
+         dtmDados.qryTarefas.Close;
+         dtmDados.qryTarefas.SQL.Clear;
+
+        // Adicionamos o INNER JOIN para trazer o nome do projeto
+       
+        // SQL ajustada com todos os campos da tabela Tarefas + Joins das tabelas relacionadas
+          dtmDados.qryTarefas.SQL.Add('SELECT T.id_tarefa, T.ProjetoId, T.ColaboradorId, T.Descricao,');
+          dtmDados.qryTarefas.SQL.Add('       T.Prioridade, T.Situacao, T.DataInicial, T.DataFinal,');
+          dtmDados.qryTarefas.SQL.Add('       P.nome_projeto,');
+          dtmDados.qryTarefas.SQL.Add('       C.nome_colaborador');
+          dtmDados.qryTarefas.SQL.Add('FROM dbo.Tarefas T');
+          dtmDados.qryTarefas.SQL.Add('LEFT JOIN dbo.Projetos P ON P.id_projeto = T.ProjetoId');
+          dtmDados.qryTarefas.SQL.Add('LEFT JOIN dbo.colaboradores C ON C.id_colaborador = T.ColaboradorId');
+          dtmDados.qryTarefas.SQL.Add('WHERE T.id_tarefa = :id_tarefa');
+
+          dtmDados.qryTarefas.Parameters.ParamByName('id_tarefa').Value := FidTarefa;
+          dtmDados.qryTarefas.Open;
+
+          if not dtmDados.qryTarefas.IsEmpty then
+            begin
+              // Atribuição dos textos e dados da tarefa nos componentes da tela
+              idDaTarefa.Caption  := dtmDados.qryTarefas.FieldByName('id_tarefa').AsString;
+              edtDescricao.Text   := dtmDados.qryTarefas.FieldByName('Descricao').AsString;
+              cboPrioridade.Text  := dtmDados.qryTarefas.FieldByName('Prioridade').AsString;
+              cboSituacao.Text    := dtmDados.qryTarefas.FieldByName('Situacao').AsString;
+
+              // Nomes recuperados através dos JOINs
+              cboProjeto.Text     := dtmDados.qryTarefas.FieldByName('nome_projeto').AsString;
+              cboUsuarios.Text     := dtmDados.qryTarefas.FieldByName('nome_colaborador').AsString;
+
+              if not dtmDados.qryTarefas.FieldByName('DataInicial').IsNull then
+              edtDataInicial.Date := StrToDateDef(
+                dtmDados.qryTarefas.FieldByName('DataInicial').AsString,
+                Date,
+                FormatSettings
+                )
+              else
+                edtDataInicial.Clear;
+              end;
+
+              // Leitura segura da Data Final
+              if not dtmDados.qryTarefas.FieldByName('DataFinal').IsNull then
+                edtDataFinal.Date := StrToDateDef(
+                  dtmDados.qryTarefas.FieldByName('DataFinal').AsString,
+                  Date,
+                  FormatSettings
+                )
+              else
+                edtDataFinal.Clear;
+            end;
+
+end.

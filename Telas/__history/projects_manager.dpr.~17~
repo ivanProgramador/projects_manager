@@ -1,0 +1,24 @@
+program projects_manager;
+
+uses
+  Vcl.Forms,
+  uTelaPrincipal in 'uTelaPrincipal.pas' {frmPrincipal},
+  uCadColaboradores in 'uCadColaboradores.pas' {formColaboradores},
+  uDtmDados in '..\componentes\uDtmDados.pas' {dtmDados: TDataModule},
+  uTelaEdicaoUsuario in 'uTelaEdicaoUsuario.pas' {frmEdicaoUsuario},
+  uCadProjeto in 'uCadProjeto.pas' {Form1};
+
+{$R *.res}
+
+begin
+  Application.Initialize;
+  Application.MainFormOnTaskbar := True;
+  Application.CreateForm(TfrmPrincipal, frmPrincipal);
+  Application.CreateForm(TformColaboradores, formColaboradores);
+  Application.CreateForm(TformColaboradores, formColaboradores);
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TdtmDados, dtmDados);
+  Application.CreateForm(TfrmEdicaoUsuario, frmEdicaoUsuario);
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
+end.

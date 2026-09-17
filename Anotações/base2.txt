@@ -1,0 +1,35 @@
+-- 1. Tabela de Usuários
+CREATE TABLE Usuarios (
+    ID_Usuario INT IDENTITY(1,1) PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    Email VARCHAR(100) UNIQUE NOT NULL,
+    Senha VARCHAR(64) NOT NULL,
+    TipoUsuario VARCHAR(10) NOT NULL CHECK (TipoUsuario IN ('GESTOR', 'USUARIO')),
+    Ativo BIT DEFAULT 1 NOT NULL
+);
+
+-- 2. Tabela de Projetos
+CREATE TABLE Projetos (
+    ID_Projeto INT IDENTITY(1,1) PRIMARY KEY,
+    NomeProjeto VARCHAR(150) NOT NULL,
+    Descricao TEXT,
+    DataInicio DATE NOT NULL,
+    DataPrevisaoFim DATE,
+    Status VARCHAR(20) DEFAULT 'EM_ANDAMENTO' CHECK (Status IN ('PLANEJADO', 'EM_ANDAMENTO', 'CONCLUIDO', 'CANCELADO')),
+    ID_Gestor INT NOT NULL,
+    CONSTRAINT FK_Projetos_Gestor FOREIGN KEY (ID_Gestor) REFERENCES Usuarios(ID_Usuario)
+);
+
+-- 3. Tabela de Tarefas
+CREATE TABLE Tarefas (
+    ID_Tarefa INT IDENTITY(1,1) PRIMARY KEY,
+    ID_Projeto INT NOT NULL,
+    ID_UsuarioResponsavel INT NOT NULL, -- Garante que a tarefa OBRIGATORIAMENTE tem um responsável
+    Titulo VARCHAR(150) NOT NULL,
+    Descricao TEXT,
+    DataEntrega DATE NOT NULL,
+    Prioridade VARCHAR(10) DEFAULT 'MEDIA' CHECK (Prioridade IN ('BAIXA', 'MEDIA', 'ALTA')),
+    Status VARCHAR(20) DEFAULT 'PENDENTE' CHECK (Status IN ('PENDENTE', 'EM_EXECUCAO', 'CONCLUIDA')),
+    CONSTRAINT FK_Tarefas_Projeto FOREIGN KEY (ID_Projeto) REFERENCES Projetos(ID_Projeto) ON DELETE CASCADE,
+    CONSTRAINT FK_Tarefas_Usuario FOREIGN KEY (ID_UsuarioResponsavel) REFERENCES Usuarios(ID_Usuario)
+);

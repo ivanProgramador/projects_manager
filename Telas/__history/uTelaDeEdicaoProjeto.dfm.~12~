@@ -1,0 +1,144 @@
+object frmEdtProjeto: TfrmEdtProjeto
+  Left = 0
+  Top = 0
+  Caption = 'EDI'#199#195'O DE PROJETO'
+  ClientHeight = 268
+  ClientWidth = 511
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  OnShow = FormShow
+  TextHeight = 15
+  object lblCodigo: TJvLabel
+    Left = 8
+    Top = 32
+    Width = 50
+    Height = 15
+    Caption = 'CODIGO:'
+    Transparent = True
+  end
+  object lblNome: TJvLabel
+    Left = 8
+    Top = 77
+    Width = 40
+    Height = 15
+    Caption = 'NOME:'
+    Transparent = True
+  end
+  object lblDescricao: TJvLabel
+    Left = 8
+    Top = 106
+    Width = 68
+    Height = 15
+    Caption = 'DESCRI'#199#195'O:'
+    Transparent = True
+  end
+  object lblDataCriacao: TJvLabel
+    Left = 8
+    Top = 135
+    Width = 88
+    Height = 15
+    Caption = 'DATA CRIA'#199#195'O:'
+    Transparent = True
+  end
+  object lblDataConclusao: TJvLabel
+    Left = 8
+    Top = 172
+    Width = 108
+    Height = 15
+    Caption = 'DATA CONCLUS'#195'O:'
+    Transparent = True
+  end
+  object lblStatus: TJvLabel
+    Left = 8
+    Top = 201
+    Width = 45
+    Height = 15
+    Caption = 'STATUS:'
+    Transparent = True
+  end
+  object lblCodProjeto: TJvLabel
+    Left = 122
+    Top = 32
+    Width = 65
+    Height = 15
+    Caption = 'cod_projeto'
+    Transparent = True
+  end
+  object edtNome: TJvEdit
+    Left = 122
+    Top = 69
+    Width = 333
+    Height = 23
+    TabOrder = 0
+    Text = ''
+  end
+  object edtDescricao: TJvEdit
+    Left = 122
+    Top = 98
+    Width = 333
+    Height = 23
+    TabOrder = 1
+    Text = ''
+  end
+  object edtDataCriacao: TJvDateEdit
+    Left = 122
+    Top = 127
+    Width = 153
+    Height = 23
+    ShowNullDate = False
+    TabOrder = 2
+  end
+  object edtDataConclusao: TJvDateEdit
+    Left = 122
+    Top = 164
+    Width = 153
+    Height = 23
+    ShowNullDate = False
+    TabOrder = 3
+  end
+  object cboStatus: TJvComboBox
+    Left = 122
+    Top = 193
+    Width = 339
+    Height = 23
+    TabOrder = 4
+    Text = 'EM ANDAMENTO'
+    Items.Strings = (
+      'CONCLUIDO'
+      'EM ANDAMENTO'
+      'CANCELADO'
+      'ADIADO')
+    ItemIndex = 1
+  end
+  object btnAtualizar: TJvBitBtn
+    Left = 8
+    Top = 235
+    Width = 153
+    Height = 25
+    Caption = 'Atualizar'
+    TabOrder = 5
+    OnClick = btnAtualizarClick
+  end
+  object btnDeletar: TJvBitBtn
+    Left = 184
+    Top = 235
+    Width = 137
+    Height = 25
+    Caption = 'Deletar'
+    TabOrder = 6
+    OnClick = btnDeletarClick
+  end
+  object btnCancelar: TJvBitBtn
+    Left = 336
+    Top = 235
+    Width = 125
+    Height = 25
+    Caption = 'Cancelar'
+    TabOrder = 7
+    OnClick = btnCancelarClick
+  end
+end

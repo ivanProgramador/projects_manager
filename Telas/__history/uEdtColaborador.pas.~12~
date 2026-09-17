@@ -1,0 +1,95 @@
+unit uEdtColaborador;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
+  JvExButtons, JvBitBtn, JvExStdCtrls, JvCombobox, JvEdit, JvExControls, JvLabel;
+
+type
+  TfrmEdtCol = class(TForm)
+    // Componentes da tela (devem bater com o Name configurado no .dfm)
+    lblCodigo: TJvLabel;
+    lblNome: TJvLabel;
+    edtColNome: TJvEdit;
+    edtColEmail: TJvEdit;
+    cboColSituacao: TJvComboBox;
+    procedure FormShow(Sender: TObject);
+    procedure btnSalvarClick(Sender: TObject);
+  private
+    FidUsuario: Integer;
+    procedure CarregarDados;
+  public
+    property IdUsuario: Integer read FIDUsuario write FIDUsuario;
+  end;
+
+var
+  frmEdtCol: TfrmEdtCol;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+procedure TfrmEdtCol.FormShow(Sender: TObject);
+begin
+  // Carrega os dados do colaborador assim que o formulário é exibido
+  CarregarDados;
+end;
+
+procedure TfrmEdtCol.CarregarDados;
+begin
+  if FidUsuario > 0 then
+  begin
+    dtmDados.qryUsuarios.Close;
+    dtmDados.qryUsuarios.SQL.Clear;
+    dtmDados.qryUsuarios.SQL.Text :=
+      'SELECT * FROM dbo.colaboradores WHERE codigo_colaborador = :codigo';
+    dtmDados.qryUsuarios.Parameters.ParamByName('codigo').Value := FidUsuario;
+    dtmDados.qryUsuarios.Open;
+
+    if not dtmDados.qryUsuarios.IsEmpty then
+    begin
+      edtColCodigo.Text   := dtmDados.qryUsuarios.FieldByName('codigo_colaborador').AsString;
+      edtColNome.Text     := dtmDados.qryUsuarios.FieldByName('nome_colaborador').AsString;
+      edtColEmail.Text    := dtmDados.qryUsuarios.FieldByName('email_colaborador').AsString;
+      cboColCargo.Text    := dtmDados.qryUsuarios.FieldByName('cargo_colaborador').AsString;
+      cboColSituacao.Text := dtmDados.qryUsuarios.FieldByName('situacao_colaborador').AsString;
+      edtColSenha.Text    := dtmDados.qryUsuarios.FieldByName('senha_colaborador').AsString;
+    end;
+  end;
+end;
+
+procedure TfrmEdtCol.btnSalvarClick(Sender: TObject);
+begin
+  try
+    dtmDados.qryUsuarios.Close;
+    dtmDados.qryUsuarios.SQL.Clear;
+    dtmDados.qryUsuarios.SQL.Add('UPDATE dbo.colaboradores SET ');
+    dtmDados.qryUsuarios.SQL.Add('  nome_colaborador = :nome, ');
+    dtmDados.qryUsuarios.SQL.Add('  email_colaborador = :email, ');
+    dtmDados.qryUsuarios.SQL.Add('  cargo_colaborador = :cargo, ');
+    dtmDados.qryUsuarios.SQL.Add('  situacao_colaborador = :situacao, ');
+    dtmDados.qryUsuarios.SQL.Add('  senha_colaborador = :senha ');
+    dtmDados.qryUsuarios.SQL.Add('WHERE codigo_colaborador = :codigo');
+
+    dtmDados.qryUsuarios.Parameters.ParamByName('nome').Value     := edtColNome.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('email').Value    := edtColEmail.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('cargo').Value    := cboColCargo.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('situacao').Value := cboColSituacao.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('senha').Value    := edtColSenha.Text;
+    dtmDados.qryUsuarios.Parameters.ParamByName('codigo').Value   := FidUsuario;
+
+    dtmDados.qryUsuarios.ExecSQL;
+
+    ShowMessage('Colaborador atualizado com sucesso!');
+    ModalResult := mrOk; // Fecha a tela de edição retornando OK
+  except
+    on E: Exception do
+      ShowMessage('Erro ao atualizar: ' + E.Message);
+  end;
+end;
+
+end.

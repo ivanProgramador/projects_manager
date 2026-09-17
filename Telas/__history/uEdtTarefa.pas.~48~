@@ -1,0 +1,176 @@
+unit uEdtTarefa;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.StdCtrls,
+  JvExStdCtrls, JvCombobox, JvEdit, Vcl.Mask, JvExMask, JvToolEdit,Data.DB,
+  Vcl.Buttons, JvExButtons, JvBitBtn;
+
+type
+  TfrmEditarTarefa = class(TForm)
+    lblListaProjetos: TJvLabel;
+    JvLabel1: TJvLabel;
+    cboProjeto: TJvComboBox;
+    cboUsuarios: TJvComboBox;
+    lblDataInicio: TJvLabel;
+    edtDescricao: TJvEdit;
+    edtDataInicial: TJvDateEdit;
+    JvLabel2: TJvLabel;
+    edtDataFinal: TJvDateEdit;
+    lblDataFinal: TJvLabel;
+    cboSituacao: TJvComboBox;
+    JvLabel3: TJvLabel;
+    JvLabel4: TJvLabel;
+    cboPrioridade: TJvComboBox;
+    lblIdTarefa: TJvLabel;
+    idDaTarefa: TJvLabel;
+    btnAtualizar: TJvBitBtn;
+    JvBitBtn1: TJvBitBtn;
+    JvBitBtn2: TJvBitBtn;
+    procedure btnAtualizarClick(Sender: TObject);
+
+
+  private
+     FidTarefa :integer;
+     procedure SetIdTarefa(const Value: Integer);
+     procedure CarregadadosTarefa;
+
+
+  public
+     property IdTarefa: Integer read FidTarefa write SetIdTarefa;
+  end;
+
+var
+  frmEditarTarefa: TfrmEditarTarefa;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+procedure TfrmEditarTarefa.SetIdTarefa(const Value: Integer);
+begin
+  FidTarefa := Value;
+  CarregadadosTarefa; // Executa o carregamento assim que o ID for atribuído
+
+end;
+
+
+procedure TfrmEditarTarefa.btnAtualizarClick(Sender: TObject);
+begin
+   dtmDados.qryTarefas.Close;
+  dtmDados.qryTarefas.SQL.Clear;
+
+  dtmDados.qryTarefas.SQL.Add('UPDATE dbo.Tarefas');
+  dtmDados.qryTarefas.SQL.Add('SET ');
+  dtmDados.qryTarefas.SQL.Add('  ProjetoId = (SELECT TOP 1 id_projeto FROM dbo.Projetos WHERE nome_projeto = :nome_projeto),');
+  dtmDados.qryTarefas.SQL.Add('  ColaboradorId = (SELECT TOP 1 id_colaborador FROM dbo.colaboradores WHERE nome_colaborador = :nome_colaborador),');
+  dtmDados.qryTarefas.SQL.Add('  Descricao = :descricao,');
+  dtmDados.qryTarefas.SQL.Add('  Prioridade = :prioridade,');
+  dtmDados.qryTarefas.SQL.Add('  Situacao = :situacao,');
+  dtmDados.qryTarefas.SQL.Add('  DataInicial = :data_inicial,');
+  dtmDados.qryTarefas.SQL.Add('  DataFinal = :data_final');
+  dtmDados.qryTarefas.SQL.Add('WHERE id_tarefa = :id_tarefa');
+
+  // Parâmetros
+  dtmDados.qryTarefas.Parameters.ParamByName('id_tarefa').Value        := FidTarefa;
+  dtmDados.qryTarefas.Parameters.ParamByName('nome_projeto').Value     := cboProjeto.Text;
+  dtmDados.qryTarefas.Parameters.ParamByName('nome_colaborador').Value := cboUsuarios.Text;
+  dtmDados.qryTarefas.Parameters.ParamByName('descricao').Value        := edtDescricao.Text;
+  dtmDados.qryTarefas.Parameters.ParamByName('prioridade').Value       := cboPrioridade.Text;
+  dtmDados.qryTarefas.Parameters.ParamByName('situacao').Value         := cboSituacao.Text;
+
+  // Trata Datas
+  if edtDataInicial.Date > 0 then
+    dtmDados.qryTarefas.Parameters.ParamByName('data_inicial').Value := FormatDateTime('yyyy-mm-dd', edtDataInicial.Date)
+  else
+    dtmDados.qryTarefas.Parameters.ParamByName('data_inicial').Value := System.Variants.Null;
+
+  if edtDataFinal.Date > 0 then
+    dtmDados.qryTarefas.Parameters.ParamByName('data_final').Value := FormatDateTime('yyyy-mm-dd', edtDataFinal.Date)
+  else
+    dtmDados.qryTarefas.Parameters.ParamByName('data_final').Value := System.Variants.Null;
+
+  // Executa a atualização no banco
+  dtmDados.qryTarefas.ExecSQL;
+
+  ShowMessage('Tarefa atualizada com sucesso!');
+  Close;
+end;
+
+procedure TfrmEditarTarefa.CarregadadosTarefa;
+var
+  FormatSettings: TFormatSettings;
+begin
+      // 1. CARREGAR A LISTA COMPLETA DE PROJETOS NO COMBOBOX
+      cboProjeto.Items.Clear;
+      dtmDados.qryTarefas.Close; // ou use uma query auxiliar se preferir
+      dtmDados.qryTarefas.SQL.Text := 'SELECT id_projeto, nome_projeto FROM dbo.Projetos ORDER BY nome_projeto';
+      dtmDados.qryTarefas.Open;
+
+      while not dtmDados.qryTarefas.Eof do
+      begin
+        // Adiciona o nome do projeto no ComboBox
+        cboProjeto.Items.Add(dtmDados.qryTarefas.FieldByName('nome_projeto').AsString);
+        dtmDados.qryTarefas.Next;
+      end;
+
+      // 2. CARREGAR A LISTA COMPLETA DE COLABORADORES NO COMBOBOX
+      cboUsuarios.Items.Clear;
+      dtmDados.qryTarefas.Close;
+      dtmDados.qryTarefas.SQL.Text := 'SELECT id_colaborador, nome_colaborador FROM dbo.colaboradores ORDER BY nome_colaborador';
+      dtmDados.qryTarefas.Open;
+
+      while not dtmDados.qryTarefas.Eof do
+      begin
+        // Adiciona o nome do colaborador no ComboBox
+        cboUsuarios.Items.Add(dtmDados.qryTarefas.FieldByName('nome_colaborador').AsString);
+        dtmDados.qryTarefas.Next;
+      end;
+
+      // 3. CONSULTAR A TAREFA ESPECÍFICA PARA EDITAÇÃO
+      dtmDados.qryTarefas.Close;
+      dtmDados.qryTarefas.SQL.Clear;
+      dtmDados.qryTarefas.SQL.Add('SELECT T.id_tarefa, T.ProjetoId, T.ColaboradorId, T.Descricao,');
+      dtmDados.qryTarefas.SQL.Add('       T.Prioridade, T.Situacao, T.DataInicial, T.DataFinal,');
+      dtmDados.qryTarefas.SQL.Add('       P.nome_projeto, C.nome_colaborador');
+      dtmDados.qryTarefas.SQL.Add('FROM dbo.Tarefas T');
+      dtmDados.qryTarefas.SQL.Add('LEFT JOIN dbo.Projetos P ON P.id_projeto = T.ProjetoId');
+      dtmDados.qryTarefas.SQL.Add('LEFT JOIN dbo.colaboradores C ON C.id_colaborador = T.ColaboradorId');
+      dtmDados.qryTarefas.SQL.Add('WHERE T.id_tarefa = :id_tarefa');
+
+      dtmDados.qryTarefas.Parameters.ParamByName('id_tarefa').Value := FidTarefa;
+      dtmDados.qryTarefas.Open;
+
+      if not dtmDados.qryTarefas.IsEmpty then
+      begin
+        idDaTarefa.Caption := dtmDados.qryTarefas.FieldByName('id_tarefa').AsString;
+        edtDescricao.Text  := dtmDados.qryTarefas.FieldByName('Descricao').AsString;
+        cboPrioridade.Text := dtmDados.qryTarefas.FieldByName('Prioridade').AsString;
+        cboSituacao.Text   := dtmDados.qryTarefas.FieldByName('Situacao').AsString;
+
+        // Seleciona o Projeto e Usuário atuais na lista carregada
+        cboProjeto.ItemIndex := cboProjeto.Items.IndexOf(dtmDados.qryTarefas.FieldByName('nome_projeto').AsString);
+        cboUsuarios.ItemIndex := cboUsuarios.Items.IndexOf(dtmDados.qryTarefas.FieldByName('nome_colaborador').AsString);
+
+        // Formatação de datas
+        FormatSettings := TFormatSettings.Create;
+        FormatSettings.DateSeparator := '-';
+        FormatSettings.ShortDateFormat := 'yyyy-mm-dd';
+
+        if not dtmDados.qryTarefas.FieldByName('DataInicial').IsNull then
+          edtDataInicial.Date := StrToDateDef(dtmDados.qryTarefas.FieldByName('DataInicial').AsString, Date, FormatSettings)
+        else
+          edtDataInicial.Clear;
+
+        if not dtmDados.qryTarefas.FieldByName('DataFinal').IsNull then
+          edtDataFinal.Date := StrToDateDef(dtmDados.qryTarefas.FieldByName('DataFinal').AsString, Date, FormatSettings)
+        else
+          edtDataFinal.Clear;
+         end;
+end;
+
+end.

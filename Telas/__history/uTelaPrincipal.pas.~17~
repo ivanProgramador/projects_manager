@@ -1,0 +1,91 @@
+unit uTelaPrincipal;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Menus, JvMenus;
+
+type
+  TfrmPrincipal = class(TForm)
+    mnPrincipal: TJvMainMenu;
+    CADASTROS1: TMenuItem;
+    USUARIOS1: TMenuItem;
+    Projetos1: TMenuItem;
+    AREFAS1: TMenuItem;
+    DASHBOARD1: TMenuItem;
+    procedure USUARIOS1Click(Sender: TObject);
+    procedure Projetos1Click(Sender: TObject);
+    procedure AREFAS1Click(Sender: TObject);
+
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmPrincipal: TfrmPrincipal;
+
+implementation
+
+{$R *.dfm}
+
+uses uCadColaboradores, uCadProjeto, uCadTarefas;
+
+
+
+procedure TfrmPrincipal.AREFAS1Click(Sender: TObject);
+ var
+    FormTarefa : TfrmCadTarefa;
+begin
+
+    FormTarefa := TfrmCadTarefa.Create(Self);
+
+    try
+        FormTarefa.ShowModal;
+      finally
+        FormTarefa.Free;
+    end;
+
+end;
+
+
+
+procedure TfrmPrincipal.Projetos1Click(Sender: TObject);
+var
+  FormProjeto : TfrmCadProjeto;
+
+begin
+
+  FormProjeto := TfrmCadProjeto.Create(Self);
+
+  try
+
+     FormProjeto.ShowModal;
+
+   finally
+
+     FormProjeto.Free;
+
+  end;
+
+
+
+end;
+
+procedure TfrmPrincipal.USUARIOS1Click(Sender: TObject);
+ var
+  FormColab : TformColaboradores;
+
+begin
+  FormColab := TformColaboradores.Create(Self);
+   try
+      // 2. Exibe a tela em modo modal
+         FormColab.ShowModal;
+   finally
+      // 3. Garante a liberação da memória ao fechar a tela
+     FormColab.Free;
+  end;
+end;
+end.

@@ -1,0 +1,67 @@
+unit uTelaDash;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.ExtCtrls,
+  Data.DB, Vcl.Grids, Vcl.DBGrids, Vcl.StdCtrls, Vcl.Buttons, JvExButtons,
+  JvBitBtn;
+
+type
+  TfrmDash = class(TForm)
+    Panel1: TPanel;
+    Panel2: TPanel;
+    Panel3: TPanel;
+    Panel4: TPanel;
+    lblTitulo1: TJvLabel;
+    lblTitulo2: TJvLabel;
+    lblTitulo3: TJvLabel;
+    lblTitulo4: TJvLabel;
+    lblProjetosAndamento: TJvLabel;
+    lblTarefasPendentes: TJvLabel;
+    lblTarefasAtrasadas: TJvLabel;
+    lblColabAtivos: TJvLabel;
+    grdResumo: TDBGrid;
+    procedure FormShow(Sender: TObject);
+  private
+    procedure consultarIndicesDashboard;
+  public
+  end;
+
+var
+  frmDash: TfrmDash;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+procedure TfrmDash.consultarIndicesDashboard;
+begin
+  dtmDados.qryDashBoard.Close;
+  dtmDados.qryDashBoard.SQL.Text := 'EXEC sp_ObterIndicesDashboard';
+
+  try
+    dtmDados.qryDashBoard.Open;
+
+    if not dtmDados.qryDashBoard.IsEmpty then
+    begin
+      lblProjetosAndamento.Caption := dtmDados.qryDashBoard.FieldByName('TotalProjetosAndamento').AsString;
+      lblTarefasPendentes.Caption  := dtmDados.qryDashBoard.FieldByName('TotalTarefasPendentes').AsString;
+      lblTarefasAtrasadas.Caption  := dtmDados.qryDashBoard.FieldByName('TotalTarefasAtrasadas').AsString;
+      lblColabAtivos.Caption       := dtmDados.qryDashBoard.FieldByName('TotalColabAtivos').AsString;
+    end;
+  finally
+    dtmDados.qryDashBoard.Close;
+  end;
+end;
+
+procedure TfrmDash.FormShow(Sender: TObject);
+begin
+  // Apenas executa a consulta quando o formulário é exibido
+  consultarIndicesDashboard;
+end;
+
+end.

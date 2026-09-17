@@ -1,0 +1,147 @@
+unit uTelaEdicaoUsuario;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, JvExControls, JvLabel, Vcl.StdCtrls,
+  Vcl.Buttons, JvExButtons, JvBitBtn, JvExStdCtrls, JvCombobox, JvEdit;
+
+type
+  TfrmEdicaoUsuario = class(TForm)
+    lblCodigo: TJvLabel;
+    lblNome: TJvLabel;
+    lblEmail: TJvLabel;
+    JvLabel1: TJvLabel;
+    lblCargo: TJvLabel;
+    lblSituacao: TJvLabel;
+    edtNome: TJvEdit;
+    edtEmail: TJvEdit;
+    edtSenha: TJvEdit;
+    cboCargo: TJvComboBox;
+    JvComboBox1: TJvComboBox;
+    btnAtualizar: TJvBitBtn;
+    btnExcluir: TJvBitBtn;
+    btnCancelar: TJvBitBtn;
+    lblUsuCod: TJvLabel;
+    procedure FormShow(Sender: TObject);
+    procedure btnAtualizarClick(Sender: TObject);
+    procedure btnExcluirClick(Sender: TObject);
+    procedure btnCancelarClick(Sender: TObject);
+  private
+    FidUsuario:integer;
+    procedure carregarDados;
+  public
+    property IdUsuario: Integer read FIdUsuario write FIdUsuario;
+
+  end;
+
+var
+  frmEdicaoUsuario: TfrmEdicaoUsuario;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+procedure TfrmEdicaoUsuario.btnAtualizarClick(Sender: TObject);
+  begin
+    try
+
+        dtmDados.qryUsuarios.Close;
+        dtmDados.qryUsuarios.SQL.Clear;
+        dtmDados.qryUsuarios.SQL.Add('UPDATE dbo.colaboradores SET');
+        dtmDados.qryUsuarios.SQL.Add('  nome_colaborador = :nome_colaborador,');
+        dtmDados.qryUsuarios.SQL.Add('  email_colaborador = :email_colaborador,');
+        dtmDados.qryUsuarios.SQL.Add('  cargo_colaborador = :cargo_colaborador,');
+        dtmDados.qryUsuarios.SQL.Add('  situacao_colaborador = :situacao_colaborador,');
+        dtmDados.qryUsuarios.SQL.Add('  senha_colaborador = :senha_colaborador');
+        dtmDados.qryUsuarios.SQL.Add('WHERE id_colaborador = :id_colaborador');
+
+        // Passa os dados das caixas de texto/combos para os parâmetros do SQL
+        dtmDados.qryUsuarios.Parameters.ParamByName('id_colaborador').Value       := FIdUsuario;
+        dtmDados.qryUsuarios.Parameters.ParamByName('nome_colaborador').Value   := edtNome.Text;
+        dtmDados.qryUsuarios.Parameters.ParamByName('email_colaborador').Value  := edtEmail.Text;
+        dtmDados.qryUsuarios.Parameters.ParamByName('cargo_colaborador').Value  := cboCargo.Text;
+        dtmDados.qryUsuarios.Parameters.ParamByName('situacao_colaborador').Value := JvComboBox1.Text;
+        dtmDados.qryUsuarios.Parameters.ParamByName('senha_colaborador').Value := edtSenha.Text;
+
+        // Executa a instrução de atualização no banco de dados
+        dtmDados.qryUsuarios.ExecSQL;
+
+        ShowMessage('Dados atualizados com sucesso!');
+
+        ModalResult := mrOk;
+
+
+       except
+        on E: Exception do
+        ShowMessage('Erro ao ataualizar dados: ' + E.Message);
+    end;
+  end;
+
+
+
+
+procedure TfrmEdicaoUsuario.btnCancelarClick(Sender: TObject);
+begin
+   ShowMessage('Nenhuma alteração foi feita');
+   ModalResult := mrOk;
+end;
+
+procedure TfrmEdicaoUsuario.btnExcluirClick(Sender: TObject);
+    begin
+        dtmDados.qryUsuarios.Close;
+        dtmDados.qryUsuarios.SQL.Clear;
+        dtmDados.qryUsuarios.SQL.Add('DELETE FROM dbo.Colaboradores WHERE id_colaborador = :id_colaborador');
+        dtmDados.qryUsuarios.Parameters.ParamByName('id_colaborador').Value := FidUsuario;
+
+        dtmDados.qryUsuarios.ExecSQL;
+
+        ShowMessage('cadastro excluido com sucesso!');
+
+        ModalResult := mrOk;
+
+    end;
+
+procedure TfrmEdicaoUsuario.carregarDados;
+  begin
+
+    try
+        dtmDados.qryUsuarios.Close;
+        dtmDados.qryUsuarios.SQL.Clear;
+        dtmDados.qryUsuarios.SQL.Add('SELECT id_colaborador, codigo_colaborador, nome_colaborador, email_colaborador, ' +
+                                     'cargo_colaborador, situacao_colaborador,senha_colaborador');
+        dtmDados.qryUsuarios.SQL.Add('FROM dbo.colaboradores WHERE id_colaborador = :id_selecionado');
+
+        //passando o valor da variavel para a query
+        dtmDados.qryUsuarios.Parameters.ParamByName('id_selecionado').Value := FidUsuario;
+
+        //executando a consulta
+        dtmDados.qryUsuarios.Open;
+
+        //Se a consulta retornar a gum valor os campos são preenchidos com os dados
+        if not dtmDados.qryUsuarios.IsEmpty then
+          begin
+            lblUsuCod.Caption := dtmDados.qryUsuarios.FieldByName('codigo_colaborador').AsString;
+            edtNome.Text      := dtmDados.qryUsuarios.FieldByName('nome_colaborador').AsString;
+            edtEmail.Text     := dtmDados.qryUsuarios.FieldByName('email_colaborador').AsString;
+            edtSenha.Text     := dtmDados.qryUsuarios.FieldByName('senha_colaborador').AsString;
+            cboCargo.Text     := dtmDados.qryUsuarios.FieldByName('cargo_colaborador').AsString;
+            JvComboBox1.Text := dtmDados.qryUsuarios.FieldByName('situacao_colaborador').AsString;
+          end;
+
+       except
+        on E: Exception do
+        ShowMessage('Erro ao carregar dados do usuário: ' + E.Message);
+    end;
+  end;
+
+
+procedure TfrmEdicaoUsuario.FormShow(Sender: TObject);
+begin
+    carregarDados;
+end;
+
+end.

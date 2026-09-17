@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2026/08/29 03:13:45.000.979,=C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/08/29 12:28:57.000.961,=C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/08/29 12:30:42.000.449,=C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/09/12 15:45:57.000.850,=C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>2026/09/12 15:47:25.000.745,C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.dfm=C:\projects_manager\Telas\uTelaPrincipal.dfm</Transaction>
+    <Transaction>2026/09/12 15:47:25.000.745,C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Unit1.pas=C:\projects_manager\Telas\uTelaPrincipal.pas</Transaction>
+    <Transaction>2026/09/12 15:47:40.000.613,C:\Users\ivann\Documents\Embarcadero\Studio\Projects\Project1.dproj=C:\projects_manager\Telas\projects_manager.dproj</Transaction>
+    <Transaction>2026/09/12 15:49:56.000.579,=C:\projects_manager\Telas\Unit2.pas</Transaction>
+    <Transaction>2026/09/12 15:51:00.000.439,C:\projects_manager\Telas\Unit2.dfm=C:\projects_manager\Telas\uCadColaboradores.dfm</Transaction>
+    <Transaction>2026/09/12 15:51:00.000.439,C:\projects_manager\Telas\Unit2.pas=C:\projects_manager\Telas\uCadColaboradores.pas</Transaction>
+    <Transaction>2026/09/12 16:36:50.000.269,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/12 16:37:03.000.305,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/12 16:37:37.000.640,C:\projects_manager\Telas\Unit1.pas=C:\projects_manager\componentes\uDtmDados.pas</Transaction>
+    <Transaction>2026/09/12 16:37:37.000.640,C:\projects_manager\Telas\Unit1.dfm=C:\projects_manager\componentes\uDtmDados.dfm</Transaction>
+    <Transaction>2026/09/12 20:38:24.000.365,=C:\projects_manager\Telas\Unit2.pas</Transaction>
+    <Transaction>2026/09/12 20:46:27.000.253,C:\projects_manager\Telas\Unit2.dfm=C:\projects_manager\Telas\uEdtColaborador.dfm</Transaction>
+    <Transaction>2026/09/12 20:46:27.000.253,C:\projects_manager\Telas\Unit2.pas=C:\projects_manager\Telas\uEdtColaborador.pas</Transaction>
+    <Transaction>2026/09/13 12:01:18.000.051,C:\projects_manager\Telas\uEdtColaborador.pas=</Transaction>
+    <Transaction>2026/09/13 12:01:55.000.241,=C:\projects_manager\Telas\Unit2.pas</Transaction>
+    <Transaction>2026/09/13 12:03:02.000.510,C:\projects_manager\Telas\uTelaEdicaoUsuario.pas=C:\projects_manager\Telas\Unit2.pas</Transaction>
+    <Transaction>2026/09/13 12:03:02.000.510,C:\projects_manager\Telas\uTelaEdicaoUsuario.dfm=C:\projects_manager\Telas\Unit2.dfm</Transaction>
+    <Transaction>2026/09/13 19:09:51.000.357,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/13 19:34:20.000.839,C:\projects_manager\Telas\Unit1.pas=C:\projects_manager\Telas\uCadProjeto.pas</Transaction>
+    <Transaction>2026/09/13 19:34:20.000.839,C:\projects_manager\Telas\Unit1.dfm=C:\projects_manager\Telas\uCadProjeto.dfm</Transaction>
+    <Transaction>2026/09/13 21:58:28.000.877,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/13 22:00:25.000.217,C:\projects_manager\Telas\Unit1.pas=C:\projects_manager\Telas\uTelaDeEdicaoProjeto.pas</Transaction>
+    <Transaction>2026/09/13 22:00:25.000.217,C:\projects_manager\Telas\Unit1.dfm=C:\projects_manager\Telas\uTelaDeEdicaoProjeto.dfm</Transaction>
+    <Transaction>2026/09/14 16:00:38.000.776,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/14 16:11:09.000.069,C:\projects_manager\Telas\Unit1.pas=C:\projects_manager\Telas\uCadTarefas.pas</Transaction>
+    <Transaction>2026/09/14 16:11:09.000.069,C:\projects_manager\Telas\Unit1.dfm=C:\projects_manager\Telas\uCadTarefas.dfm</Transaction>
+    <Transaction>2026/09/15 12:33:38.000.889,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/15 15:28:14.000.161,C:\projects_manager\Telas\uEdtTarefa.dfm=C:\projects_manager\Telas\Unit1.dfm</Transaction>
+    <Transaction>2026/09/15 15:28:14.000.161,C:\projects_manager\Telas\uEdtTarefa.pas=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/16 07:04:57.000.768,=C:\projects_manager\Telas\Unit1.pas</Transaction>
+    <Transaction>2026/09/16 07:06:13.000.969,C:\projects_manager\Telas\Unit1.dfm=C:\projects_manager\Telas\uTelaDash.dfm</Transaction>
+    <Transaction>2026/09/16 07:06:13.000.969,C:\projects_manager\Telas\Unit1.pas=C:\projects_manager\Telas\uTelaDash.pas</Transaction>
+    <Transaction>2026/09/16 09:18:52.000.191,=C:\projects_manager\Telas\New1.txt</Transaction>
+  </Transactions>
+</BorlandProject>

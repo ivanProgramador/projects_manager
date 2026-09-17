@@ -1,0 +1,28 @@
+unit uEdtColaborador;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
+  JvExButtons, JvBitBtn, JvExStdCtrls, JvCombobox, JvEdit, JvExControls, JvLabel;
+
+type
+  TfrmEdtCol = class(TForm)
+    // ... adicione aqui os outros componentes da sua tela de edição
+  private
+
+  public
+
+  end;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados;
+
+
+
+
+end.

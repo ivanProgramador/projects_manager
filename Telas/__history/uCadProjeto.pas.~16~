@@ -1,0 +1,118 @@
+unit uCadProjeto;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.StdCtrls, Vcl.Buttons,
+  JvExButtons, JvBitBtn, Vcl.Grids, Vcl.DBGrids, JvExStdCtrls, JvCombobox,
+  Vcl.Mask, JvExMask, JvToolEdit, JvEdit, JvExControls, JvLabel;
+
+type
+  TfrmCadProjeto = class(TForm)
+    lblCodigo: TJvLabel;
+    lblNome: TJvLabel;
+    lblDescricao: TJvLabel;
+    JvLabel1: TJvLabel;
+    lblDataConclusao: TJvLabel;
+    JvLabel2: TJvLabel;
+    edtCodigo: TJvEdit;
+    edtNone: TJvEdit;
+    edtDescricao: TJvEdit;
+    edtDataCriacao: TJvDateEdit;
+    edtDataConclusao: TJvDateEdit;
+    cboStatus: TJvComboBox;
+    grdProjetos: TDBGrid;
+    lblPesquisar: TJvLabel;
+    btnPesquisar: TJvEdit;
+    btnCadastrar: TJvBitBtn;
+    procedure FormShow(Sender: TObject);
+    procedure btnCadastrarClick(Sender: TObject);
+    procedure grdProjetosDblClick(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmCadProjeto: TfrmCadProjeto;
+
+implementation
+
+{$R *.dfm}
+
+uses uDtmDados, uTelaDeEdicaoProjeto;
+
+procedure TfrmCadProjeto.btnCadastrarClick(Sender: TObject);
+ begin
+
+   try
+
+     dtmDados.qryProjetos.Close;
+     dtmDados.qryProjetos.SQL.Clear;
+     dtmDados.qryProjetos.SQL.Add('INSERT INTO dbo.Projetos(codigo_projeto,nome_projeto,'+
+                                  'descricao_projeto,data_criacao,data_conclusao,status_projeto)');
+     dtmDados.qryProjetos.SQL.Add(' VALUES ');
+     dtmDados.qryProjetos.SQL.Add('( :codigo_projeto, :nome_projeto, :descricao_projeto, ');
+     dtmDados.qryProjetos.SQL.Add(' :data_criacao, :data_conclusao, :status_projeto );');
+
+     dtmDados.qryProjetos.Parameters.ParamByName('codigo_projeto').Value      := edtCodigo.Text;
+     dtmDados.qryProjetos.Parameters.ParamByName('nome_projeto').Value        := edtNone.Text;
+     dtmDados.qryProjetos.Parameters.ParamByName('descricao_projeto').Value   := edtDescricao.Text;
+     dtmDados.qryProjetos.Parameters.ParamByName('data_criacao').Value        := edtDataCriacao.Date;
+     dtmDados.qryProjetos.Parameters.ParamByName('data_conclusao').Value      := edtDataConclusao.Text;
+     dtmDados.qryProjetos.Parameters.ParamByName('status_projeto').Value      := cboStatus.Text;
+
+     dtmDados.qryProjetos.ExecSQL;
+
+     ShowMessage('Projeto cadastrado com sucesso!');
+
+     edtCodigo.Text := '';
+     edtNone.Text := '';
+     edtDescricao.Text := '';
+     edtDataCriacao.Date := Date;
+     edtDataConclusao.Text := '';
+     cboStatus.ItemIndex := 1;
+
+   except
+      on E: Exception do
+        ShowMessage('Erro ao cadastrar: ' + E.Message);
+   end;
+
+ end;
+
+procedure TfrmCadProjeto.FormShow(Sender: TObject);
+begin
+ edtDataCriacao.Date := Date;
+end;
+
+procedure TfrmCadProjeto.grdProjetosDblClick(Sender: TObject);
+  var
+    idProjetoSelecionado: integer;
+    FormEdtProjeto:TfrmEdtProjeto;
+
+    begin
+       if(grdProjetos.DataSource <> nil)and(grdProjetos.DataSource.DataSet <> nil )and(not grdProjetos.DataSource.DataSet.IsEmpty) then
+          begin
+             idProjetoSelecionado := grdProjetos.DataSource.DataSet.FieldByName('id_projeto').AsInteger;
+
+             FormEdtProjeto := TfrmEdtProjeto.Create(Self);
+
+             try
+                FormEdtProjeto.IdProjeto := idProjetoSelecionado;
+
+                  if FormEdtProjeto.ShowModal = mrOk then
+                  begin
+                    // Atualiza a grid recarregando o DataSet
+                    grdProjetos.DataSource.DataSet.Refresh;
+                  end;
+
+
+               finally
+             end;
+
+          end;
+    end;
+
+end.
